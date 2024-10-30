@@ -1,0 +1,11 @@
+a {
+    text-decoration: none;
+    color: #5C5C5C;
+}
+li{
+    padding: 3px 0;
+    font-size: 14px;
+}
+a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,255 @@
+@media (max-width: 768px) {
+
+    /* Máy tính bảng */
+    html {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 1024px) {
+
+    /* Máy tính và màn hình lớn */
+    html {
+        font-size: 18px;
+    }
+}
+
+.text-style {
+    color: #25282B;
+    font-size: 16px;
+}
+
+.product-image-div {
+    position: relative;
+}
+
+.name-product {
+    font-size: 0.8rem;
+}
+
+.price-product {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.margin-custom p {
+    margin: 0 !important;
+}
+
+.product-container img {
+    width: 100%;
+    display: block;
+}
+
+.open-quickview {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(12, 11, 11);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+}
+
+.product-container:hover .open-quickview {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .open-quickview {
+        opacity: 1;
+
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(241, 241, 241, .7);
+        color: rgb(7, 7, 7);
+        transition: opacity 0.3s ease;
+        cursor: pointer;
+        font-size: 12px;
+        text-align: center;
+    }
+}
+
+.modal-product-image {
+    width: 90%;
+    margin-right: 20px;
+}
+
+.sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    /* Khoảng cách giữa các nút */
+}
+
+.size-button {
+    background-color: #f1f1f1;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px 26px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.size-button.active {
+    background-color: #25282B;
+    color: white;
+}
+.product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.detail-product {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.detail-product:hover {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #25282B;
+}
+.filter-section-title {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.filter-options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-button {
+    border-radius: 5px;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+button.btn-dark {
+    font-size: 1rem;
+    padding: 0.5rem;
+}
+
+button.btn-link {
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: #000;
+    padding: 0.5rem;
+}.custom-checkbox .form-check-input:checked {
+    background-color: #343a40;
+    /* màu dark */
+    border-color: #343a40;
+}
+
+.custom-checkbox .form-check-input:focus {
+    box-shadow: none;
+}
+
+.custom-checkbox .form-check-label {
+    font-weight: 500;
+    color: #343a40;
+}.custom-dropdown-menu .dropdown-item-custom {
+    width: 250px;
+    /* Set the width of each item */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    /* Adjust padding for spacing */
+}
+
+.check-icon {
+    margin-left: auto;
+    /* Push the check icon to the right */
+}
+
+/* Pagination container styling */
+.mt-4 .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+@media (max-width: 768px) {
+    .pagination .page-item {
+        padding: 0.1rem 0.2rem;
+        /* Reduce padding for mobile */
+    }
+
+    .pagination .page-item .page-link {
+        font-size: 0.85rem;
+        /* Adjust font size for mobile */
+    }
+}
+
+@media (max-width: 576px) {
+    .pagination {
+        gap: 2px;
+    }
+
+    .pagination .page-item {
+        padding: 0.1rem 0.2rem;
+    }
+}
+/* Pagination button styling */
+.pagination .page-item .page-link {
+    color: #343a40;
+    background-color: white;
+    border: 1px solid #343a40;
+    border-radius: 50%;
+    /* Makes buttons circular */
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+/* Active page styling */
+.pagination .page-item.active .page-link {
+    color: white;
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+/* Hover effect on pagination buttons */
+.pagination .page-item .page-link:hover {
+    background-color: #343a40;
+    color: white;
+}
+
+/* First, Last, Next, and Previous button styling */
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link,
+.pagination .page-item .page-link:hover {
+    background-color: #343a40;
+    color: white;
+}
+
+/* Disabled state styling for previous/next buttons */
+.pagination .page-item.disabled .page-link {
+    color: grey;
+    background-color: white;
+    border-color: grey;
+    cursor: not-allowed;
+}

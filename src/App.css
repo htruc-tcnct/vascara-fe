@@ -1,0 +1,26 @@
+.full-page{
+    position: relative;
+}
+.header-position{
+    position: sticky;
+        top: 0px;
+        z-index: 1000;
+        transition: top 0.3s ease-in-out;
+}/* CSS để ẩn Header khi cuộn xuống và hiển thị khi cuộn lên */
+
+
+.hide {
+    top: -100px;
+}
+
+.show {
+    top: 0;
+}   
+
+.full-page,
+.header-position,
+.custom-navbar-width,.banner,
+footer {
+    width: 100%;
+    /* Chiều rộng ăn theo cha */
+}
