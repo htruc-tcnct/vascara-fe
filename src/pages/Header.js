@@ -419,9 +419,9 @@ function Header() {
 
                   <Dropdown.Menu className="custom-dropdown-menu">
                     <div className="login-form">
-                      <h3 className="login-title">Đăng nhập</h3>
+                      <h3 className="login-title">{t("login.sign_in")}</h3>
 
-                      <label htmlFor="email">Số điện thoại hoặc Email:</label>
+                      <label htmlFor="email">{t("login.phone_or_email")}</label>
                       <input
                         type="text"
                         id="email"
@@ -430,7 +430,7 @@ function Header() {
                         placeholder="Vd: 0123456789"
                       />
 
-                      <label htmlFor="password">Mật khẩu</label>
+                      <label htmlFor="password">{t("login.password")}</label>
                       <div className="password-field">
                         <input
                           type={showPassword ? "text" : "password"}
@@ -447,16 +447,23 @@ function Header() {
                         />
                       </div>
 
-                      {error && <p className="error-message">{error}</p>}
+                      {error && (
+                        <p
+                          className="error-message"
+                          style={{ fontSize: "12px", color: "red" }}
+                        >
+                          {error}
+                        </p>
+                      )}
 
                       <button className="login-button" onClick={handleLogin}>
-                        Đăng nhập
+                        {t("login.sign_in")}
                       </button>
 
                       <hr />
                       <span className="signup-prompt">
-                        Bạn chưa có tài khoản{" "}
-                        <a href="/register">Đăng ký ngay</a>
+                        {t("login.dont_have_account")}{" "}
+                        <a href="/register">{t("login.let_register")}</a>
                       </span>
                     </div>
                   </Dropdown.Menu>

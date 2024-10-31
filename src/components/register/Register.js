@@ -1,104 +1,65 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useCallback } from "react";
 import "./register.css";
+import { useTranslation } from "react-i18next";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import LoginForm from "./LoginForm";
+import RegisterForm from "./RegisterForm";
 
 function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState(null);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState("login");
+  const { t } = useTranslation();
+
   const changeToRegister = () => {
     setActiveTab("register");
   };
-  const LoginForm = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword);
-    };
 
-    return (
-      <div className="login-form">
-        <h3 className="form-title">Đăng nhập</h3>
+  const handleLogin = useCallback(async () => {
+    try {
+      const response = await axios.post("http://localhost:8081/users/login", {
+        email,
+        password,
+      });
+      const { token } = response.data;
+      login(token);
+      alert("Login successful!");
+      navigate("/login-success");
+    } catch (error) {
+      setError("Invalid email or password");
+    }
+  }, [email, password, login, navigate]);
 
-        <label htmlFor="email">Số điện thoại hoặc Email:</label>
-        <input type="text" id="email" placeholder="Vd: 0123456789" />
+  const handleRegister = useCallback(async () => {
+    if (!email && !password) {
+      setError("Please provide either an email or phone number and password.");
+      return;
+    }
 
-        <label htmlFor="password">Mật khẩu</label>
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            id="password"
-            placeholder="********"
-          />
-          <FontAwesomeIcon
-            icon={showPassword ? faEyeSlash : faEye}
-            className="eye-icon"
-            onClick={togglePasswordVisibility}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
-
-        <a href="#" className="forgot-password">
-          Bạn quên mật khẩu?
-        </a>
-        <button className="form-button">Đăng nhập</button>
-
-        <hr />
-        <span className="signup-prompt">
-          Bạn chưa có tài khoản? <a onClick={changeToRegister}>Đăng ký ngay</a>
-        </span>
-      </div>
-    );
-  };
-
-  const RegisterForm = () => {
-    const [showPassword, setShowPassword] = useState(false);
-    const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword);
-    };
-
-    return (
-      <div className="register-form">
-        <h3 className="form-title">Đăng ký</h3>
-        <p className="form-subtitle">
-          Trở thành thành viên Vascara để nhận ưu đãi độc quyền và thanh toán
-          nhanh hơn
-        </p>
-
-        <label>Số điện thoại</label>
-        <input type="text" placeholder="Vd: 0123456789" />
-
-        <label>Họ và tên</label>
-        <input type="text" placeholder="Vd: Nguyễn Văn A" />
-
-        <label>Mật khẩu</label>
-        <div className="password-field">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="********"
-          />
-          <FontAwesomeIcon
-            icon={showPassword ? faEyeSlash : faEye}
-            className="eye-icon"
-            onClick={togglePasswordVisibility}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
-
-        <div className="terms">
-          <div className="d-flex align-items-center gap-2">
-            <input type="checkbox" id="agree" />
-            <label htmlFor="agree" className="m-0">
-              Tôi đồng ý với các mục và chính sách dưới đây
-            </label>
-          </div>
-          <p>
-            <a href="#">Điều khoản & Điều kiện</a> và{" "}
-            <a href="#">Chính sách Quyền riêng tư</a>
-          </p>
-        </div>
-        <button className="form-button">Đăng ký</button>
-      </div>
-    );
-  };
+    try {
+      const response = await axios.post(
+        "http://localhost:8081/users/register",
+        {
+          email,
+          password,
+          name,
+        }
+      );
+      const { token } = response.data;
+      login(token);
+      alert("Register successful!");
+      navigate("/login-success");
+    } catch (error) {
+      setError("Registration failed. Please try again.");
+    }
+  }, [email, password, name, login, navigate]);
 
   return (
     <div className="auth-container">
@@ -107,18 +68,38 @@ function Register() {
           className={`auth-tab ${activeTab === "login" ? "active" : ""}`}
           onClick={() => setActiveTab("login")}
         >
-          Đăng nhập
+          {t("login.sign_in")}
         </button>
         <button
           className={`auth-tab ${activeTab === "register" ? "active" : ""}`}
           onClick={() => setActiveTab("register")}
         >
-          Đăng ký
+          {t("login.sign_up")}
         </button>
       </div>
 
       <div className="auth-content">
-        {activeTab === "login" ? <LoginForm /> : <RegisterForm />}
+        {activeTab === "login" ? (
+          <LoginForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+            t={t}
+          />
+        ) : (
+          <RegisterForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            name={name}
+            setName={setName}
+            handleRegister={handleRegister}
+            t={t}
+          />
+        )}
       </div>
     </div>
   );

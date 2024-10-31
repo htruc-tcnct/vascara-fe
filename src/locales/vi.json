@@ -63,5 +63,21 @@
   "default": "Mặc định",
   "increse_price":"Giá tăng dần",
   "decrease_price": "Giá giảm dần"
+  },
+  "login":{
+    "sign_up": "Đăng ký",
+    "sign_in": "Đăng nhập",
+    "phone_or_email": "Số điện thoại hoặc Email: ",
+    "password": "Mật khẩu: ",
+    "dont_have_account": "Bạn chưa có tài khoản? ",
+    "let_register": "Đăng ký ngay",
+    "login_failed": "Tên đăng nhập hoặc mật khẩu sai!",
+     "forgot_password": "Bạn quên mật khẩu?",
+     "slogan":" Trở thành thành viên Vascara để nhận ưu đãi độc quyền và thanh toán nhanh hơn",
+     "name_user": "Họ và tên: ",
+     "policy_require": "Tôi đồng ý với các mục và chính sách dưới đây",
+      "term":"Điều khoản & Điều kiện",
+     "privacy": "Chính sách Quyền riêng tư",
+     "or": "và"
   }
 }

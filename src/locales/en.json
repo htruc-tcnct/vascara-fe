@@ -65,6 +65,24 @@
    "increse_price":"Price Increase",
   "decrease_price": "Price Descrease"
 
+  },
+  "login":{
+    "sign_up": "Sign up",
+    "sign_in": "Sign in",
+    "phone_or_email": "Phone number or Email: ",
+    "password": "Password: ",
+    "dont_have_account": "Don't have an account? ",
+    "let_register": "Sign up now",
+    "login_failed": "Invalid email or password!",
+    "forgot_password": "Forgotten password?",
+    "slogan":"Become a Vascara member to receive exclusive offers and pay faster",
+    "name_user": "Your full name: ",
+     "policy_require": "I agree to the terms and policies below",
+     "term":"Terms & Conditions",
+     "privacy": "Privacy Policy",
+     "or": "or"
+
+
   }
 
 }
