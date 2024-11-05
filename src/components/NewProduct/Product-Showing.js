@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Modal,
@@ -8,6 +8,7 @@ import {
   Dropdown,
   Pagination,
   Spinner,
+  Image,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Offcanvas from "react-bootstrap/Offcanvas";
@@ -19,6 +20,7 @@ import {
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import "../style/product-showing.css";
+import { useCart } from "../../context/CartContext";
 const formatCurrency = (price) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -52,6 +54,8 @@ const formatPriceRange = (priceRange) => {
   }
 };
 function ProductShowing() {
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
   const [showModal, setShowModal] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
   const [products, setProducts] = useState([]);
@@ -67,10 +71,31 @@ function ProductShowing() {
   const handleCloseErrorModal = () => setShowErrorModal(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, settotalPages] = useState(1);
+  const [ProductTotal, setProductTotal] = useState(0);
   const productsPerPage = 20;
   const [showPageInput, setShowPageInput] = useState(false);
   const [inputPage, setInputPage] = useState("");
+  const isAuthenticated = localStorage.getItem("token");
+  const handleQuantityChange = (event) => {
+    const value = Math.max(0, event.target.value); // Đảm bảo số lượng ít nhất là 1
+    setQuantity(value);
+  };
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      alert("chua dang nhap");
+      return;
+    }
 
+    console.log(
+      "Sản phẩm đã được thêm vào giỏ hàng:",
+      selectedProduct,
+      "size: ",
+      selectedSize,
+      "quantity: ",
+      quantity
+    );
+    addToCart(selectedProduct.product_id, quantity, selectedSize);
+  };
   const handlePageInputSubmit = () => {
     const page = Number(inputPage);
     if (page >= 1 && page <= totalPages) {
@@ -115,55 +140,53 @@ function ProductShowing() {
 
     fetchCategories();
   }, []);
-  const handleComplete = async (sortOption = "", page = 1) => {
-    try {
-      setLoading(true);
-      const sortSelect =
-        sortOption === "Giá tăng dần" || sortOption === "Price Increase"
-          ? "price_asc"
-          : sortOption === "Giá giảm dần" || sortOption === "Price Descrease"
-          ? "price_desc"
-          : "";
-      setSelectedSort(sortOption);
+  const handleComplete = useCallback(
+    async (sortOption = "", page = 1) => {
+      try {
+        setLoading(true);
+        const sortSelect =
+          sortOption === "Giá tăng dần" || sortOption === "Price Increase"
+            ? "price_asc"
+            : sortOption === "Giá giảm dần" || sortOption === "Price Descrease"
+            ? "price_desc"
+            : "";
 
-      const filterParams = new URLSearchParams({
-        limit: productsPerPage,
-        page,
-        ...(selectedCategory && { category_id: selectedCategory }),
-        ...(selectedPrices && { priceRange: selectedPrices }),
-        ...(sortSelect && { sortSelect }),
-      }).toString();
+        setSelectedSort(sortOption);
 
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterParams}`
-      );
+        const filterParams = new URLSearchParams({
+          limit: productsPerPage,
+          page,
+          ...(selectedCategory && { category_id: selectedCategory }),
+          ...(selectedPrices && { priceRange: selectedPrices }),
+          ...(sortSelect && { sortSelect }),
+        }).toString();
 
-      setProducts(response.data.products);
-      setShowFilter(false);
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterParams}`
+        );
 
-      const totalProducts = response.data.pagination.totalProducts;
-      setAllProducts(totalProducts);
-      settotalPages(Math.ceil(totalProducts / productsPerPage));
-    } catch (error) {
-      console.error(
-        "Error fetching products:",
-        error.response || error.message
-      );
-      setShowErrorModal(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setProducts(response.data.products);
+        setShowFilter(false);
+        setProductTotal(response.data.pagination.totalProducts);
+        const totalProducts = response.data.pagination.totalProducts;
+        setAllProducts(totalProducts);
+        settotalPages(Math.ceil(totalProducts / productsPerPage));
+      } catch (error) {
+        console.error(
+          "Error fetching products:",
+          error.response || error.message
+        );
+        setShowErrorModal(true);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [productsPerPage, selectedCategory, selectedPrices]
+  );
 
   useEffect(() => {
     handleComplete(selectedSort, currentPage);
-  }, [
-    currentPage,
-    productsPerPage,
-    selectedSort,
-    selectedCategory,
-    selectedPrices,
-  ]);
+  }, [handleComplete, currentPage, selectedSort]);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -175,13 +198,6 @@ function ProductShowing() {
   const handleCategorySelect = (categoryId) => {
     setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
     setSelectedPrices([]);
-  };
-  const handlePriceToggle = (priceRange) => {
-    setSelectedPrices((prevPrices) =>
-      prevPrices.includes(priceRange)
-        ? prevPrices.filter((price) => price !== priceRange)
-        : [...prevPrices, priceRange]
-    );
   };
 
   const clearAllPrices = () => {
@@ -197,7 +213,7 @@ function ProductShowing() {
         return { ...product, currentTranslation: translation };
       })
     );
-  }, [i18n.language, products]); // Thêm `products` làm phụ thuộc
+  }, [i18n.language, allProducts]); // Thêm `products` làm phụ thuộc
 
   const handleOpenModal = (product) => {
     console.log("Selected product:", product);
@@ -336,7 +352,7 @@ function ProductShowing() {
         </Offcanvas>
 
         <div className="col-lg-6 d-lg-block d-none text-center text-style align-item-center">
-          {products.length} {t("banner.products_number")}
+          {ProductTotal} {t("banner.products_number")}
         </div>
         <div className="col-lg-3 col-6 text-center border-start text-style">
           <Dropdown>
@@ -359,15 +375,7 @@ function ProductShowing() {
                   <FontAwesomeIcon icon={faCheck} className="check-icon" />
                 )}
               </Dropdown.Item>
-              {/* <Dropdown.Item
-                className="dropdown-item-custom"
-                onClick={() => handleSelect("Bán chạy nhất")}
-              >
-                Bán chạy nhất
-                {selectedSort === "Bán chạy nhất" && (
-                  <FontAwesomeIcon icon={faCheck} className="check-icon" />
-                )}
-              </Dropdown.Item> */}
+
               <Dropdown.Divider />
               <Dropdown.Item
                 className="dropdown-item-custom"
@@ -400,7 +408,7 @@ function ProductShowing() {
         </div>
       </div>
       <div className="col-sm-4 d-lg-none d-block text-style">
-        {products.length} {t("banner.products_number")}
+        {ProductTotal} {t("banner.products_number")}
       </div>
 
       <div className="d-flex row mt-5">
@@ -413,11 +421,12 @@ function ProductShowing() {
         ) : (
           <div className="d-flex row mt-5">
             {products.map((product) => {
-              const productName = product.currentTranslation?.name;
+              const productName =
+                product.currentTranslation?.name ||
+                product.translations[1].name;
               const productImage = product.isHovered
                 ? product.hover_image_url
                 : product.main_image_url;
-
               return (
                 <div
                   key={product.product_id}
@@ -428,7 +437,7 @@ function ProductShowing() {
                     onMouseEnter={() => handleMouseEnter(product.product_id)}
                     onMouseLeave={() => handleMouseLeave(product.product_id)}
                   >
-                    <img
+                    <Image
                       src={productImage}
                       alt={productName}
                       className="product-image"
@@ -540,7 +549,7 @@ function ProductShowing() {
                   <Carousel>
                     {selectedProduct.product_images.map((image, index) => (
                       <Carousel.Item key={image.image_id}>
-                        <img
+                        <Image
                           src={image.image_url}
                           alt={`Slide ${image.image_id}`}
                           className="d-block w-100 modal-product-image"
@@ -549,7 +558,7 @@ function ProductShowing() {
                     ))}
                   </Carousel>
                 ) : (
-                  <img
+                  <Image
                     src={
                       selectedProduct.main_image_url ||
                       "https://via.placeholder.com/150"
@@ -559,7 +568,8 @@ function ProductShowing() {
                   />
                 )}
               </div>
-              {/* Product information */}
+
+              {/* Thông tin sản phẩm */}
               <div className="col-6">
                 <div className="product-info">
                   <p className="name-product fw-400 m-0">
@@ -570,20 +580,29 @@ function ProductShowing() {
                   </p>
                   <p>Size</p>
                   <div className="sizes">
-                    {selectedProduct.translations[0].description
-                      .split(" ")
-                      .filter((size) => size.trim() !== "")
-                      .map((size) => (
-                        <button
-                          key={size}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
-                          onClick={() => setSelectedSize(size)}
-                        >
-                          {size}
-                        </button>
-                      ))}
+                    {selectedProduct.sizes.map(({ size }) => (
+                      <button
+                        key={size}
+                        className={`size-button ${
+                          selectedSize === size ? "active" : ""
+                        }`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Biểu tượng chọn số lượng */}
+                  <div className="quantity-selector mt-3">
+                    <p>Quantity:</p>
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      min="0"
+                      className="form-control quantity-input"
+                    />
                   </div>
                 </div>
               </div>
@@ -591,7 +610,12 @@ function ProductShowing() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="dark">{t("banner.add_to_card")}</Button>
+          <Button
+            variant="dark"
+            onClick={() => handleAddToCart(quantity)} // Truyền số lượng khi thêm vào giỏ hàng
+          >
+            {t("banner.add_to_card")}
+          </Button>
           <Button variant="secondary" onClick={handleCloseModal}>
             {t("banner.deatail_product")}
           </Button>

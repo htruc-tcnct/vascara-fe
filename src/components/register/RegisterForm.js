@@ -13,7 +13,19 @@ function RegisterForm({
   t,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  const handleSubmit = () => {
+    if (password !== confirmPassword) {
+      setErrorMessage(t("login.password_mismatch")); // Dùng t() nếu có bản dịch
+    } else {
+      setErrorMessage("");
+      handleRegister();
+    }
+  };
 
   return (
     <div className="register-form">
@@ -25,7 +37,7 @@ function RegisterForm({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         type="text"
-        placeholder="Vd: 0123456789"
+        placeholder="Vd: abc@ex.com"
       />
 
       <label>{t("login.name_user")}</label>
@@ -52,7 +64,19 @@ function RegisterForm({
         />
       </div>
 
-      <button onClick={handleRegister} className="form-button">
+      <label>{t("login.confirm_password")}</label>
+      <div className="password-field">
+        <input
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          type={showPassword ? "text" : "password"}
+          placeholder="********"
+        />
+      </div>
+
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      <button onClick={handleSubmit} className="form-button">
         {t("login.sign_up")}
       </button>
     </div>

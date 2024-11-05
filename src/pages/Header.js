@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Navbar,
   Container,
@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBagShopping,
   faMagnifyingGlass,
-  faHeart,
+  faBell,
   faUser,
   faEye,
   faEyeSlash,
@@ -26,9 +26,13 @@ import "./style/header.css";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import LanguageSelector from "../middleware/changeLanguge";
+import { useCart } from "../context/CartContext";
+import CartModal from "../components/CartModal/CartModal";
+import { getUserIdFromToken } from "../utils/auth";
 function OffCanvasExample({ show, handleClose }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const goToLogin = () => {
     navigate("/register");
     handleClose();
@@ -153,7 +157,9 @@ function OffCanvasExample({ show, handleClose }) {
   );
 }
 
-function Header() {
+function Header({ scrollDirection }) {
+  const { cartCount } = useCart();
+
   const [showPassword, setShowPassword] = useState(false);
   const { t, i18n } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
@@ -165,6 +171,21 @@ function Header() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [showModal, setShowModal] = useState(null);
+  const [userId, setUserId] = useState(null); // State to store userId
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    const idFromToken = getUserIdFromToken();
+    setUserId(idFromToken);
+    console.log(userId);
+  }, []);
+  useEffect(() => {
+    // Kiểm tra token trong localStorage khi component mount
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
   const handleLogin = async () => {
     try {
       const response = await axios.post("http://localhost:8081/users/login", {
@@ -176,72 +197,80 @@ function Header() {
       login(token); // Cập nhật trạng thái đăng nhập và lưu token qua AuthContext
 
       alert("Login successful!");
-      navigate("/login-success"); // Chuyển hướng ngay lập tức
+      navigate("/"); // Chuyển hướng ngay lập tức
+      window.location.reload();
     } catch (error) {
       setError("Invalid email or password"); // Thông báo lỗi nếu đăng nhập thất bại
     }
   };
-  const openFormLogin = () => {
-    console.log("abc");
-  };
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setShowMenu(true);
+  const handleMouseEnter = (type) => {
+    setShowModal(type); // Hiển thị modal
+  };
+  const handleLogout = () => {
+    // Xóa token khỏi localStorage khi đăng xuất
+    localStorage.removeItem("token");
+    setToken(null);
+    window.location.reload();
   };
   const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setShowMenu(false);
-    }, 250);
+    setShowModal(null); // Ẩn modal khi rời chuột
   };
+
+  useEffect(() => {
+    console.log("showModal has changed:", showModal);
+  }, [showModal]);
   const handleToogle = () => setToogle(!showToogle);
   const handleClose = () => setToogle(false);
   return (
-    <Navbar
-      expand="lg"
-      bg="white"
-      variant="light"
-      style={{ width: "100% !important" }}
+    <header
+      className={`header-position ${
+        scrollDirection === "down" ? "hide" : "show"
+      }`}
     >
-      <Container fluid className="d-flex ">
-        <Navbar.Toggle
-          style={{ border: "0", fontSize: "15px" }}
-          onClick={handleToogle}
-        />
-        <OffCanvasExample show={showToogle} handleClose={handleClose} />
-        <Navbar.Collapse className="d-lg-flex d-none">
-          <Row className="w-100">
-            <Col xs={3} className="d-flex align-items-center">
-              <div className="d-flex flex-column align-items-center">
-                <img
-                  src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
-                  alt=""
-                  style={{ width: "100px" }}
-                />
-                <LanguageSelector />
-              </div>
-            </Col>
-            <Col xs={6} className="d-flex justify-content-center">
-              <Nav className="d-none d-lg-flex flex-nowrap">
-                {/* hang moi */}
-                <Nav.Link className="px-3" href="/">
-                  {t("new_arrivals")}
-                </Nav.Link>
-                {/* San Pham với OffCanvas */}
-                <Nav.Link
-                  className="px-3"
-                  href="#new_arrivals"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  {t("products")}
+      <Navbar
+        expand="lg"
+        bg="white"
+        variant="light"
+        style={{ width: "100% !important" }}
+      >
+        <Container fluid className="d-flex ">
+          <Navbar.Toggle
+            style={{ border: "0", fontSize: "15px" }}
+            onClick={handleToogle}
+          />
+          <OffCanvasExample show={showToogle} handleClose={handleClose} />
+          <Navbar.Collapse className="d-lg-flex d-none">
+            <Row className="w-100">
+              <Col xs={3} className="d-flex align-items-center">
+                <div className="d-flex flex-column align-items-center">
+                  <img
+                    src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
+                    alt=""
+                    style={{ width: "100px" }}
+                  />
+                  <LanguageSelector />
+                </div>
+              </Col>
+              <Col xs={6} className="d-flex justify-content-center">
+                <Nav className="d-none d-lg-flex flex-nowrap">
+                  {/* hang moi */}
+                  <Nav.Link className="px-3" href="/">
+                    {t("new_arrivals")}
+                  </Nav.Link>
+                  {/* San Pham với OffCanvas */}
+                  <Nav.Link
+                    className="px-3"
+                    href="#new_arrivals"
+                    onMouseEnter={() => handleMouseEnter("products")}
+                  >
+                    {t("products")}
+                  </Nav.Link>
+
                   {
                     <Dropdown.Menu
-                      show={showMenu}
                       className="custom-menu"
                       style={{
                         width: "96vw",
@@ -252,7 +281,8 @@ function Header() {
                         left: 0,
                         top: "100%",
                       }}
-                      onMouseEnter={handleMouseEnter} // Giữ menu khi hover vào
+                      show={showModal === "products"}
+                      onMouseEnter={() => handleMouseEnter("products")}
                       onMouseLeave={handleMouseLeave}
                     >
                       <Row>
@@ -386,114 +416,197 @@ function Header() {
                       </Row>
                     </Dropdown.Menu>
                   }
-                </Nav.Link>
-                {/* bo suu tap */}
-                <Nav.Link className="px-3" href="#collections">
-                  {t("collections")}
-                </Nav.Link>
-                {/* fashion talks */}
+                  {/* bo suu tap */}
+                  <Nav.Link className="px-3" href="#collections">
+                    {t("collections")}
+                  </Nav.Link>
+                  {/* fashion talks */}
 
-                <Nav.Link className="px-3" href="#fashion_talks">
-                  {t("fashion_talks")}
-                </Nav.Link>
-                <Nav.Link className="px-3" href="#notifications">
-                  {t("notifications")}
-                </Nav.Link>
-                <Nav.Link className="px-3" href="#store">
-                  {t("store")}
-                </Nav.Link>
-              </Nav>
-            </Col>
-            <Col xs={3} className="d-flex justify-content-end">
-              <Navbar className="m-2">
-                <FontAwesomeIcon icon={faMagnifyingGlass} />
-              </Navbar>
-              <Navbar className="m-2">
-                <FontAwesomeIcon icon={faHeart} />
-              </Navbar>
-              <Navbar className="m-2">
-                <Dropdown>
-                  <Dropdown.Toggle variant="" id="dropdown-basic" as="div">
-                    <FontAwesomeIcon onClick={openFormLogin} icon={faUser} />{" "}
-                  </Dropdown.Toggle>
+                  <Nav.Link className="px-3" href="#fashion_talks">
+                    {t("fashion_talks")}
+                  </Nav.Link>
+                  <Nav.Link className="px-3" href="#notifications">
+                    {t("notifications")}
+                  </Nav.Link>
+                  <Nav.Link className="px-3" href="#store">
+                    {t("store")}
+                  </Nav.Link>
+                </Nav>
+              </Col>
+              <Col xs={3} className="d-flex justify-content-end">
+                <Navbar className="m-2">
+                  <FontAwesomeIcon
+                    className="icon-pointer"
+                    icon={faMagnifyingGlass}
+                  />
+                </Navbar>
+                <Navbar
+                  onMouseEnter={() => handleMouseEnter("inform")}
+                  onMouseLeave={handleMouseLeave}
+                  className="m-2"
+                >
+                  <FontAwesomeIcon className="icon-pointer" icon={faBell} />
+                </Navbar>
+                <Navbar
+                  onMouseEnter={() => handleMouseEnter("user")}
+                  onMouseLeave={handleMouseLeave}
+                  className="m-2"
+                >
+                  <Dropdown>
+                    <Dropdown.Toggle variant="" id="dropdown-basic" as="div">
+                      <FontAwesomeIcon className="icon-pointer" icon={faUser} />{" "}
+                    </Dropdown.Toggle>
 
-                  <Dropdown.Menu className="custom-dropdown-menu">
-                    <div className="login-form">
-                      <h3 className="login-title">{t("login.sign_in")}</h3>
+                    <Dropdown.Menu className="custom-dropdown-menu">
+                      {token ? (
+                        // Hiển thị menu người dùng nếu có token
+                        <div className="user-menu">
+                          <Dropdown.Item href="/account-info">
+                            Thông tin tài khoản
+                          </Dropdown.Item>
+                          <Dropdown.Item href="/order-history">
+                            Lịch sử mua hàng
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={handleLogout}>
+                            Đăng xuất
+                          </Dropdown.Item>
+                        </div>
+                      ) : (
+                        // Hiển thị form đăng nhập nếu chưa có token
+                        <div className="login-form">
+                          <h3 className="login-title">Đăng nhập</h3>
 
-                      <label htmlFor="email">{t("login.phone_or_email")}</label>
-                      <input
-                        type="text"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Vd: 0123456789"
-                      />
+                          <label htmlFor="email">
+                            Số điện thoại hoặc email
+                          </label>
+                          <input
+                            type="text"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Vd: 0123456789"
+                          />
 
-                      <label htmlFor="password">{t("login.password")}</label>
-                      <div className="password-field">
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          id="password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="********"
-                        />
-                        <FontAwesomeIcon
-                          icon={showPassword ? faEyeSlash : faEye}
-                          className="eye-icon"
-                          onClick={togglePasswordVisibility}
-                          style={{ cursor: "pointer" }}
-                        />
-                      </div>
+                          <label htmlFor="password">Mật khẩu</label>
+                          <div className="password-field">
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              id="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder="********"
+                            />
+                            <FontAwesomeIcon
+                              icon={showPassword ? faEyeSlash : faEye}
+                              className="eye-icon"
+                              onClick={togglePasswordVisibility}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </div>
 
-                      {error && (
-                        <p
-                          className="error-message"
-                          style={{ fontSize: "12px", color: "red" }}
-                        >
-                          {error}
-                        </p>
+                          {error && (
+                            <p
+                              className="error-message"
+                              style={{ fontSize: "12px", color: "red" }}
+                            >
+                              {error}
+                            </p>
+                          )}
+
+                          <button
+                            className="login-button"
+                            onClick={handleLogin}
+                          >
+                            Đăng nhập
+                          </button>
+
+                          <hr />
+                          <span className="signup-prompt">
+                            Bạn chưa có tài khoản?{" "}
+                            <a href="/register">Đăng ký</a>
+                          </span>
+                        </div>
                       )}
-
-                      <button className="login-button" onClick={handleLogin}>
-                        {t("login.sign_in")}
-                      </button>
-
-                      <hr />
-                      <span className="signup-prompt">
-                        {t("login.dont_have_account")}{" "}
-                        <a href="/register">{t("login.let_register")}</a>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </Navbar>
+                <Navbar
+                  onMouseEnter={() => handleMouseEnter("cart")}
+                  onMouseLeave={handleMouseLeave}
+                  className="ms-2"
+                >
+                  <div style={{ position: "relative" }}>
+                    <FontAwesomeIcon
+                      className="icon-pointer"
+                      icon={faBagShopping}
+                    />
+                    {cartCount >= 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: "-10px",
+                          right: "-10px",
+                          backgroundColor: "#5C5C5C",
+                          color: "white",
+                          borderRadius: "50%",
+                          padding: "1px 4px",
+                          fontSize: "10px",
+                        }}
+                      >
+                        {cartCount}
                       </span>
-                    </div>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </Navbar>
-              <Navbar className="ms-2">
-                <FontAwesomeIcon icon={faBagShopping} />
-              </Navbar>
-            </Col>
-          </Row>
-        </Navbar.Collapse>
-        <Navbar className="d-lg-none ">
-          <img
-            src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
-            alt=""
-            style={{ width: "80px" }}
-          />
-        </Navbar>
-        <div className="d-lg-none d-flex">
-          <LanguageSelector />
+                    )}{" "}
+                    <CartModal
+                      show={showModal === "cart"}
+                      userId={userId}
+                      cartCount={cartCount}
+                    />
+                  </div>
+                </Navbar>
+              </Col>
+            </Row>
+          </Navbar.Collapse>
+          <Navbar className="d-lg-none ">
+            <img
+              src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
+              alt=""
+              style={{ width: "80px" }}
+            />
+          </Navbar>
+          <div className="d-lg-none d-flex">
+            <LanguageSelector />
 
-          <Navbar className="ms-2">
-            <FontAwesomeIcon icon={faBagShopping} />
-          </Navbar>
-          <Navbar className="ms-2">
-            <FontAwesomeIcon icon={faMagnifyingGlass} />
-          </Navbar>
-        </div>
-      </Container>
-    </Navbar>
+            <Navbar className="ms-2">
+              <div style={{ position: "relative" }}>
+                <FontAwesomeIcon
+                  className="icon-pointer"
+                  icon={faBagShopping}
+                />
+                {cartCount >= 0 && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "-7px",
+                      right: "-8px",
+                      backgroundColor: "#5C5C5C",
+                      color: "white",
+                      borderRadius: "50%",
+                      padding: "1px 4px",
+                      fontSize: "7px",
+                    }}
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+            </Navbar>
+            <Navbar className="ms-2">
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Navbar>
+          </div>
+        </Container>
+      </Navbar>
+    </header>
   );
 }
 

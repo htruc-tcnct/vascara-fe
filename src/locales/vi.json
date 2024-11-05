@@ -67,7 +67,7 @@
   "login":{
     "sign_up": "Đăng ký",
     "sign_in": "Đăng nhập",
-    "phone_or_email": "Số điện thoại hoặc Email: ",
+    "phone_or_email": "Email: ",
     "password": "Mật khẩu: ",
     "dont_have_account": "Bạn chưa có tài khoản? ",
     "let_register": "Đăng ký ngay",
@@ -78,6 +78,8 @@
      "policy_require": "Tôi đồng ý với các mục và chính sách dưới đây",
       "term":"Điều khoản & Điều kiện",
      "privacy": "Chính sách Quyền riêng tư",
-     "or": "và"
+     "or": "và",
+     "confirm_password": "Nhập lại mật khẩu:",
+     "password_mismatch": "Mật khẩu không trùng khớp"
   }
 }

@@ -108,3 +108,17 @@ input[type="password"] {
 .signup-prompt a:hover {
     text-decoration: underline;
 }
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+.icon-pointer {
+    cursor: pointer;
+}

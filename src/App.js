@@ -3,6 +3,8 @@ import Header from "./pages/Header";
 import Login_Success from "./pages/Login_Success";
 import NotFound from "./pages/NotFound";
 import Register from "../src/components/register/Register";
+import Forgotten_Password from "../src/components/register/Forgotten_Password";
+import ResetPassword from "../src/components/register/ResetPassword";
 import Footer from "./pages/Footer";
 import Banner from "./components/NewProduct/Banner";
 import ProductShowing from "./components/NewProduct/Product-Showing";
@@ -12,7 +14,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import ProtectedRoute from "./context/ProtectedRoute";
+
 function App() {
   const [languageReady, setLanguageReady] = useState(false);
 
@@ -55,35 +59,45 @@ function App() {
 
   return (
     <AuthProvider>
-      <Router>
-        <div className="full-page">
-          <Header />
-          <div className="main-content">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <Banner />
-                    <ProductShowing />
-                  </>
-                }
-              />
-              <Route path="/register" element={<Register />} />
-              <Route
-                path="/login-success"
-                element={
-                  <ProtectedRoute>
-                    <Login_Success />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+      <CartProvider>
+        <Router>
+          <div className="full-page">
+            <Header scrollDirection={scrollDirection} />
+            <div className="main-content">
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <>
+                      <Banner />
+                      <ProductShowing />
+                    </>
+                  }
+                />
+                <Route path="/register" element={<Register />} />
+                <Route
+                  path="/forgot-password"
+                  element={<Forgotten_Password />}
+                />
+                <Route
+                  path="/reset-password/:id/:token"
+                  element={<ResetPassword />}
+                />
+                <Route
+                  path="/login-success"
+                  element={
+                    <ProtectedRoute>
+                      <Login_Success />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
-      </Router>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

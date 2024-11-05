@@ -1,21 +1,22 @@
 .full-page{
     position: relative;
 }
-.header-position{
+.header-position {
     position: sticky;
-        top: 0px;
-        z-index: 1000;
-        transition: top 0.3s ease-in-out;
-}/* CSS để ẩn Header khi cuộn xuống và hiển thị khi cuộn lên */
-
+    top: 0;
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+}
 
 .hide {
     top: -100px;
+    /* Ẩn Header khi cuộn xuống */
 }
 
 .show {
     top: 0;
-}   
+    /* Hiển thị lại Header khi cuộn lên */
+}
 
 .full-page,
 .header-position,
