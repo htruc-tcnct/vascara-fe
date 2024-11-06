@@ -290,21 +290,27 @@ function Header({ scrollDirection }) {
                           <Dropdown.Item className="text-decoration-none fs-5">
                             {t("menu.bags")}
                           </Dropdown.Item>
-                          <Dropdown.Item className="custom-dropdown-item">
+                          <Dropdown.Item
+                            className="custom-dropdown-item"
+                            href="/bag?filter=all"
+                          >
                             {t("menu.view_all_bags")}
                           </Dropdown.Item>
-                          <Dropdown.Item className="custom-dropdown-item">
+                          <Dropdown.Item
+                            className="custom-dropdown-item"
+                            href="/bag?filter=L"
+                          >
                             {t("menu.large_bags")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#tui_balo_2"
+                            href="/bag?filter=M"
                           >
                             {t("menu.medium_bags")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#tui_balo_3"
+                            href="/bag?filter=S"
                           >
                             {t("menu.small_bags")}
                           </Dropdown.Item>
@@ -315,25 +321,25 @@ function Header({ scrollDirection }) {
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#giay_dep_1"
+                            href="/sandal?category_id=3&filter=all"
                           >
                             {t("menu.view_all_shoes")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#giay_dep_1"
+                            href="/sandal?category_id=3&filter=high_heels"
                           >
                             {t("menu.high_heels")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#giay_dep_2"
+                            href="/sandal?category_id=3&filter=sandal"
                           >
                             {t("menu.sandal")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#giay_dep_3"
+                            href="/sandal?category_id=3&filter=sneaker"
                           >
                             {t("menu.sneaker")}
                           </Dropdown.Item>

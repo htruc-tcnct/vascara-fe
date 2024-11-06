@@ -5,6 +5,8 @@ import NotFound from "./pages/NotFound";
 import Register from "../src/components/register/Register";
 import Forgotten_Password from "../src/components/register/Forgotten_Password";
 import ResetPassword from "../src/components/register/ResetPassword";
+import BagComponent from "../src/components/PartComponent/BagComponent";
+import SandalComponent from "../src/components/PartComponent/SandalComponent";
 import Footer from "./pages/Footer";
 import Banner from "./components/NewProduct/Banner";
 import ProductShowing from "./components/NewProduct/Product-Showing";
@@ -75,6 +77,8 @@ function App() {
                   }
                 />
                 <Route path="/register" element={<Register />} />
+                <Route path="/bag" element={<BagComponent />} />
+                <Route path="/sandal" element={<SandalComponent />} />
                 <Route
                   path="/forgot-password"
                   element={<Forgotten_Password />}

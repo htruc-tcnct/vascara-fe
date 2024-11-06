@@ -63,7 +63,15 @@
   "sort": "Sort",
   "default": "Default",
    "increse_price":"Price Increase",
-  "decrease_price": "Price Descrease"
+  "decrease_price": "Price Descrease",
+  "load_more": "Load more ",
+   "sneaker": "Sneaker",
+  "sandal": "Sandal",
+  "allPro":"Sandal & Sneaker",
+   "allBag": "All Bags",
+  "large-bag": "Large Bags",
+  "medium-bag": "Medium Bags",
+  "small-bag": "Small Bags"
 
   },
   "login":{

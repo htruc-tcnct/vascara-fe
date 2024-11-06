@@ -62,7 +62,16 @@
   "sort": "Sắp xếp",
   "default": "Mặc định",
   "increse_price":"Giá tăng dần",
-  "decrease_price": "Giá giảm dần"
+  "decrease_price": "Giá giảm dần",
+  "load_more": "Xem thêm ",
+  "sneaker": "Giày sneaker",
+  "sandal": "Giày sandal",
+  "allPro":"Tất cả giày",
+  "allBag": "Tất cả Túi",
+  "large-bag": "Túi sách lớn",
+  "medium-bag": "Túi sách vừa",
+  "small-bag": "Túi sách nhỏ"
+
   },
   "login":{
     "sign_up": "Đăng ký",

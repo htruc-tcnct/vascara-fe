@@ -53,7 +53,7 @@ const formatPriceRange = (priceRange) => {
     return `${formatCurrency(min)} - ${formatCurrency(max)}`;
   }
 };
-function ProductShowing() {
+function ProductShowing({ keyword, filters, categoryId }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
   const [showModal, setShowModal] = useState(false);
@@ -156,13 +156,15 @@ function ProductShowing() {
         const filterParams = new URLSearchParams({
           limit: productsPerPage,
           page,
-          ...(selectedCategory && { category_id: selectedCategory }),
-          ...(selectedPrices && { priceRange: selectedPrices }),
-          ...(sortSelect && { sortSelect }),
-        }).toString();
+          ...(categoryId && { category_id: categoryId }),
 
+          ...(filters?.priceRange && { priceRange: filters.priceRange }),
+          ...(sortSelect && { sortSelect }),
+          ...(keyword && { keyword }), // Add keyword as a query parameter if provided
+        }).toString();
+        const filterToSearch = filters ? filters : filterParams;
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterParams}`
+          `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterToSearch}`
         );
 
         setProducts(response.data.products);
@@ -181,7 +183,7 @@ function ProductShowing() {
         setLoading(false);
       }
     },
-    [productsPerPage, selectedCategory, selectedPrices]
+    [productsPerPage, selectedCategory, selectedPrices, keyword, filters]
   );
 
   useEffect(() => {
@@ -423,7 +425,7 @@ function ProductShowing() {
             {products.map((product) => {
               const productName =
                 product.currentTranslation?.name ||
-                product.translations[1].name;
+                product.translations[1]?.name;
               const productImage = product.isHovered
                 ? product.hover_image_url
                 : product.main_image_url;
