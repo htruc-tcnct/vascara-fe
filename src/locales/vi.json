@@ -45,7 +45,8 @@
     "online_exclusive": "Online Exclusive",
     "bag_sale": "Túi & balo sale",
     "shoes_sale": "Giày sale",
-    "account": "Đăng nhập/ Đăng ký"
+    "account": "Đăng nhập/ Đăng ký",
+    "all-wall": "Tất cả ví"
   },
   "banner":{
  "homepage_title": "Trang chủ - BỘ SƯU TẬP SẢN PHẨM MỚI VASCARA",
@@ -70,7 +71,11 @@
   "allBag": "Tất cả Túi",
   "large-bag": "Túi sách lớn",
   "medium-bag": "Túi sách vừa",
-  "small-bag": "Túi sách nhỏ"
+  "small-bag": "Túi sách nhỏ",
+  "allWall": "Tất cả ví",
+  "hand-wall": "Ví cầm tay",
+  "mini-wall": "Ví kiểu nhỏ",
+  "leather-wall": "Ví da thật"
 
   },
   "login":{

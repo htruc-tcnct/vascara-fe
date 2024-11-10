@@ -46,7 +46,8 @@
     "online_exclusive": "Online Exclusive",
     "bag_sale": "Bags & backpacks sale",
     "shoes_sale": "Shoes sale",
-    "account" : "Sign up/ Sign in"
+    "account" : "Sign up/ Sign in",
+     "all-wall": "All wallet"
   },
   "banner":{
   "homepage_title": "Home - NEW COLLECTION OF NEW PRODUCTS VASCARA",
@@ -71,7 +72,11 @@
    "allBag": "All Bags",
   "large-bag": "Large Bags",
   "medium-bag": "Medium Bags",
-  "small-bag": "Small Bags"
+  "small-bag": "Small Bags",
+    "allWall": "Tất cả ví",
+  "hand-wall": "Hand Wallet",
+  "mini-wall": "Mini Wallet",
+  "leather-wall": "Leather Wallet"
 
   },
   "login":{

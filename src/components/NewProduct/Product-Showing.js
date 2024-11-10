@@ -86,15 +86,8 @@ function ProductShowing({ keyword, filters, categoryId }) {
       return;
     }
 
-    console.log(
-      "Sản phẩm đã được thêm vào giỏ hàng:",
-      selectedProduct,
-      "size: ",
-      selectedSize,
-      "quantity: ",
-      quantity
-    );
     addToCart(selectedProduct.product_id, quantity, selectedSize);
+    setShowModal(false);
   };
   const handlePageInputSubmit = () => {
     const page = Number(inputPage);
@@ -166,8 +159,13 @@ function ProductShowing({ keyword, filters, categoryId }) {
         const response = await axios.get(
           `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterToSearch}`
         );
-
-        setProducts(response.data.products);
+        const updatedProducts = response.data.products.map((product) => {
+          const translation =
+            product.translations.find((t) => t.language === i18n.language) ||
+            product.translations[0];
+          return { ...product, currentTranslation: translation };
+        });
+        setProducts(updatedProducts);
         setShowFilter(false);
         setProductTotal(response.data.pagination.totalProducts);
         const totalProducts = response.data.pagination.totalProducts;
@@ -215,7 +213,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
         return { ...product, currentTranslation: translation };
       })
     );
-  }, [i18n.language, allProducts]); // Thêm `products` làm phụ thuộc
+  }, [i18n.language, allProducts, currentPage]); // Thêm `products` làm phụ thuộc
 
   const handleOpenModal = (product) => {
     console.log("Selected product:", product);
@@ -423,9 +421,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
         ) : (
           <div className="d-flex row mt-5">
             {products.map((product) => {
-              const productName =
-                product.currentTranslation?.name ||
-                product.translations[1]?.name;
+              const productName = product.currentTranslation?.name;
               const productImage = product.isHovered
                 ? product.hover_image_url
                 : product.main_image_url;

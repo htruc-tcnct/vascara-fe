@@ -177,7 +177,6 @@ function Header({ scrollDirection }) {
   useEffect(() => {
     const idFromToken = getUserIdFromToken();
     setUserId(idFromToken);
-    console.log(userId);
   }, []);
   useEffect(() => {
     // Kiểm tra token trong localStorage khi component mount
@@ -193,7 +192,8 @@ function Header({ scrollDirection }) {
         password,
       });
 
-      const { token } = response.data;
+      const { token, idUser } = response.data;
+      localStorage.setItem("idUser", idUser);
       login(token); // Cập nhật trạng thái đăng nhập và lưu token qua AuthContext
 
       alert("Login successful!");
@@ -212,6 +212,7 @@ function Header({ scrollDirection }) {
   const handleLogout = () => {
     // Xóa token khỏi localStorage khi đăng xuất
     localStorage.removeItem("token");
+    localStorage.removeItem("cartCount");
     setToken(null);
     window.location.reload();
   };
@@ -219,9 +220,7 @@ function Header({ scrollDirection }) {
     setShowModal(null); // Ẩn modal khi rời chuột
   };
 
-  useEffect(() => {
-    console.log("showModal has changed:", showModal);
-  }, [showModal]);
+  useEffect(() => {}, [showModal]);
   const handleToogle = () => setToogle(!showToogle);
   const handleClose = () => setToogle(false);
   return (
@@ -350,19 +349,25 @@ function Header({ scrollDirection }) {
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#vi_1"
+                            href="/wallet?category_id=2&filter=all"
+                          >
+                            {t("menu.all-wall")}
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            className="custom-dropdown-item"
+                            href="/wallet?category_id=2&filter=hand"
                           >
                             {t("menu.hand_wallet")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#vi_2"
+                            href="/wallet?category_id=2&filter=mini"
                           >
                             {t("menu.mini_wallet")}
                           </Dropdown.Item>
                           <Dropdown.Item
                             className="custom-dropdown-item"
-                            href="#vi_3"
+                            href="/wallet?category_id=2&filter=leather"
                           >
                             {t("menu.real_leather_wallet")}
                           </Dropdown.Item>

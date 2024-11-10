@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Dropdown } from "react-bootstrap";
 import "./CartIcon.css";
 import axios from "axios";
-
+import { useCart } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 const CartModal = ({ show, userId, cartCount }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
 
+  const gotoCart = () => {
+    navigate("/cart"); // Điều hướng đến trang giỏ hàng
+  };
+  const [cartItems, setCartItems] = useState([]);
+  const token = localStorage.getItem("token");
+  const { removeWithout } = useCart();
   const fetchCart = async () => {
     try {
-      const token = localStorage.getItem("token");
       const { data } = await axios.get(
         `${process.env.REACT_APP_SERVER_URL}/carts`,
         {
@@ -19,15 +25,26 @@ const CartModal = ({ show, userId, cartCount }) => {
         }
       );
       setCartItems(data.cartItems);
-      console.log("Fetched cart data:", data);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
   };
+  const handleDeleteItems = async (cartItemId, quantity) => {
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter(
+        (item) => item.cartItemId !== cartItemId
+      );
 
+      const newCount = updatedItems.length;
+      localStorage.setItem("cartCount", newCount);
+
+      return updatedItems;
+    });
+    removeWithout(cartItemId, quantity);
+    console.log("Item deleted:", cartItemId);
+  };
   useEffect(() => {
     if (show && userId) {
-      // Only fetch when modal is shown and userId is available
       fetchCart();
     }
   }, [show, userId, cartCount]); // Re-fetch when show, userId, or cartCount changes
@@ -36,6 +53,7 @@ const CartModal = ({ show, userId, cartCount }) => {
     <Dropdown show={show}>
       <Dropdown.Menu className="cart-dropdown" align="end">
         <Dropdown.Header>Giỏ hàng của bạn</Dropdown.Header>
+        <hr />
         <div className="cart-items">
           {cartItems && cartItems.length > 0 ? (
             cartItems.map((item, index) => (
@@ -55,11 +73,20 @@ const CartModal = ({ show, userId, cartCount }) => {
                   </p>
                   <p className="item-quantity">Số lượng: {item.quantity}</p>
                 </div>
-                <button className="item-remove">Xóa</button>
+                <button
+                  className="item-remove"
+                  onClick={() =>
+                    handleDeleteItems(item.cartItemId, item.quantity)
+                  }
+                >
+                  Xóa
+                </button>
               </div>
             ))
           ) : (
-            <p>Giỏ hàng của bạn hiện đang trống.</p>
+            <p style={{ fontSize: "14px", alignContent: "center" }}>
+              Giỏ hàng của bạn hiện đang trống.
+            </p>
           )}
         </div>
         {cartItems && cartItems.length > 0 && (
@@ -68,7 +95,11 @@ const CartModal = ({ show, userId, cartCount }) => {
               <p>Tặng 1 đôi vớ cotton cho đơn chỉ từ 699K</p>
               <p>Miễn phí giao hàng cho đơn từ 899K (tối đa 30K)</p>
             </div>
-            <Dropdown.Item as="button" className="view-cart-btn">
+            <Dropdown.Item
+              as="button"
+              className="view-cart-btn"
+              onClick={gotoCart}
+            >
               Xem chi tiết giỏ hàng
             </Dropdown.Item>
           </>
