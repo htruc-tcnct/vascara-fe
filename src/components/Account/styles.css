@@ -1,0 +1,77 @@
+body {
+    color: #25282B;
+    font-weight: 400;
+}
+/* styles.css */
+.responsive-text {
+    font-size: 0.8rem;
+    /* Kích thước mặc định */
+}
+
+@media (min-width: 576px) {
+
+    /* Màn hình sm */
+    .responsive-text {
+        font-size: 0.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+
+    /* Màn hình md */
+    .responsive-text {
+        font-size: 0.6rem;
+    }
+}
+
+@media (min-width: 992px) {
+
+    /* Màn hình lg */
+    .responsive-text {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    /* Màn hình xl */
+    .responsive-text {
+        font-size: 0.9rem;
+    }
+}
+a {
+    text-decoration: none;
+    /* Loại bỏ gạch chân mặc định */
+    color: #000;
+    /* Màu chữ của liên kết */
+}
+
+a:hover {
+    text-decoration: underline !important;
+    /* Gạch chân khi hover */
+}
+a:active {
+    text-decoration: underline !important;
+    /* Gạch chân khi hover */
+}
+.form-label {
+    font-size: 0.9rem;
+}
+
+.form-control,
+.form-select {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Style for the button */
+.btn {
+    font-size: 0.9rem;
+}
+/* Align radio buttons horizontally */
+.form-check-label{
+    margin: 0;
+}
+.error-border {
+    border: 2px solid red !important;
+}

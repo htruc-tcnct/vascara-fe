@@ -1,0 +1,82 @@
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    color: #757575;
+}
+
+.step .circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.step.completed .circle {
+    background-color: #28a745;
+    color: white;
+}
+
+.step.active .circle {
+    background-color: #000;
+    color: white;
+}
+
+.line {
+    width: 50px;
+    height: 2px;
+    background-color: #ddd;
+    margin: 0 8px;
+}
+/* Biểu tượng cảnh báo */
+.icon-large {
+    font-size: 24px;
+    /* Kích thước lớn hơn */
+    color: #5f5f5f;
+    /* Xám đậm */
+}
+
+/* Nút đăng nhập */
+.custom-login-button {
+    background-color: #212529;
+    /* Màu nền xám đậm */
+    color: white;
+    /* Chữ màu trắng */
+    border: 1px solid #5f5f5f;
+    border-radius: 5px;
+    /* Bo góc */
+    font-size: 14px;
+    /* Kích thước chữ */
+    padding: 10px 20px;
+    /* Khoảng cách bên trong */
+    transition: all 0.3s ease;
+    /* Hiệu ứng khi hover */
+}
+
+.custom-login-button:hover {
+    background-color: white;
+    /* Chuyển sang trắng khi hover */
+    color: #5f5f5f;
+    /* Chữ chuyển sang xám đậm */
+    border: 1px solid #5f5f5f;
+}
+
+/* Cảnh báo */
+.text-warning {
+    color: #5f5f5f !important;
+    /* Màu chữ xám đậm */
+    font-weight: bold;
+    /* Chữ đậm */
+}

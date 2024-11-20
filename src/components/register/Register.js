@@ -24,14 +24,24 @@ function Register() {
 
   const handleLogin = useCallback(async () => {
     try {
-      const response = await axios.post("http://localhost:8081/users/login", {
-        email,
-        password,
-      });
-      const { token } = response.data;
+      const redirectUrl = localStorage.getItem("redirectAfterLogin");
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/users/login`,
+        {
+          email,
+          password,
+        }
+      );
+      const { token, idUser } = response.data;
       login(token);
-      alert("Login successful!");
-      navigate("/login-success");
+      localStorage.setItem("idUser", idUser);
+      if (redirectUrl) {
+        localStorage.removeItem("redirectAfterLogin"); // Xóa URL sau khi dùng
+        navigate(redirectUrl); // Điều hướng về URL trước đó
+      } else {
+        navigate("/"); // Nếu không có URL trước đó, về trang chủ
+      }
+      window.location.reload();
     } catch (error) {
       setError("Invalid email or password");
     }

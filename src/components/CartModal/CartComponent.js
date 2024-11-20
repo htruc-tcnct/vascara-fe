@@ -2,17 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 function CartComponent() {
   const [cartItems, setCartItems] = useState([]);
   const token = localStorage.getItem("token");
   const { addToCart, removeWithout, updateCart } = useCart();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
-  // Tính tổng giá trị đơn hàng
+  // Calculate the total amount
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  // Function to navigate to the checkout page with cartItems as state
+  const gotoCheckOut = () => {
+    navigate("/cart/checkout", { state: { cartItems } }); // Pass cartItems as state
+  };
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -36,6 +45,7 @@ function CartComponent() {
 
     fetchCartItems();
   }, [token]);
+
   const handleDeleteItem = async (cartItemId, quantity) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.filter(
@@ -49,7 +59,8 @@ function CartComponent() {
     });
     removeWithout(cartItemId, quantity);
   };
-  // Hàm tăng số lượng
+
+  // Increase quantity
   const handleIncreaseQuantity = (itemId, size) => {
     setCartItems((prevItems) =>
       prevItems.map((item) =>
@@ -61,7 +72,7 @@ function CartComponent() {
     updateCart(itemId, 1);
   };
 
-  // Hàm giảm số lượng
+  // Decrease quantity
   const handleDecreaseQuantity = (itemId, size, currentQuantity) => {
     if (currentQuantity > 1) {
       setCartItems((prevItems) =>
@@ -75,9 +86,14 @@ function CartComponent() {
     }
   };
 
+  const getProductName = (translations) => {
+    return translations[i18n.language] || "Product";
+  };
+
   return (
     <div className="container my-5">
       <h4 className="mb-4">Giỏ hàng của bạn</h4>
+
       <Row>
         <Col md={8}>
           {cartItems.length > 0 ? (
@@ -93,15 +109,24 @@ function CartComponent() {
                   </Col>
                   <Col md={9}>
                     <Card.Body>
-                      <Card.Title>{item.name}</Card.Title>
-                      <Card.Text>
-                        Màu: {item.color} | Size: {item.size}
-                      </Card.Text>
-                      <Card.Text>
-                        Giá: {Math.round(item.price).toLocaleString()}đ
-                      </Card.Text>
+                      <Card.Title>
+                        {getProductName(item.translations)}
+                      </Card.Title>
+                      {/* Size and Price on the same line */}
+                      <div className="d-flex justify-content-between">
+                        <Card.Text>
+                          {t("product-detail.Size")}: {item.size}
+                        </Card.Text>
+                        <Card.Text className="fs-6">
+                          {t("product-detail.Price")}:{" "}
+                          {Math.round(item.price).toLocaleString()}đ
+                        </Card.Text>
+                      </div>
+
                       <div className="d-flex align-items-center">
-                        <span className="me-2">Số lượng:</span>
+                        <span className="me-2">
+                          {t("product-detail.Quantity")}:
+                        </span>
                         <Button
                           variant="outline-secondary"
                           size="sm"
@@ -130,19 +155,21 @@ function CartComponent() {
                       <Button
                         variant="link"
                         className="p-0 mt-2 text-secondary"
+                        style={{ textDecoration: "underline" }}
                         onClick={() =>
                           handleDeleteItem(item.cartItemId, item.quantity)
                         }
                       >
-                        Xóa
+                        {t("product-detail.Delete")}
                       </Button>
                     </Card.Body>
                   </Col>
                 </Row>
+                <hr />
               </Card>
             ))
           ) : (
-            <p>Giỏ hàng của bạn hiện đang trống.</p>
+            <p>{t("product-detail.empty-cart")}</p>
           )}
         </Col>
 
@@ -150,36 +177,37 @@ function CartComponent() {
           <Card className="p-3" style={{ backgroundColor: "#F8F9FA" }}>
             <Card.Body>
               <Card.Text className="text-success">
-                Miễn phí giao hàng cho đơn từ 899K (tối đa 30K)
+                {t("product-detail.freeship")}
               </Card.Text>
               <hr />
               <Row>
-                <Col>Giá trị đơn hàng</Col>
+                <Col>{t("product-detail.totalOrder")}</Col>
                 <Col className="text-end">{totalAmount.toLocaleString()}đ</Col>
               </Row>
               <Row>
-                <Col>Số lượng</Col>
+                <Col>{t("product-detail.Quantity")}</Col>
                 <Col className="text-end">
                   {cartItems.reduce((total, item) => total + item.quantity, 0)}
                 </Col>
               </Row>
               <Row>
-                <Col>Giảm tiền</Col>
+                <Col>{t("product-detail.reduce-price")}</Col>
                 <Col className="text-end">0đ</Col>
               </Row>
               <hr />
               <Row>
-                <Col>Thành tiền</Col>
+                <Col>{t("product-detail.totalPrice")}</Col>
                 <Col className="text-end">
                   <strong>{totalAmount.toLocaleString()}đ</strong>
                 </Col>
               </Row>
               <Button
+                onClick={gotoCheckOut}
                 variant="dark"
                 className="w-100 mt-3"
                 style={{ backgroundColor: "#121212", borderColor: "#121212" }}
               >
-                Đi đến thanh toán
+                {t("product-detail.go-to-check-out")}
               </Button>
             </Card.Body>
           </Card>

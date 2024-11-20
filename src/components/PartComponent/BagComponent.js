@@ -12,10 +12,13 @@ const SandalComponent = () => {
   const categoryId = 3;
   return (
     <div>
-      {filter === "all" && <h4> {t("banner.allBag")}</h4>}
-      {filter === "large-bag" && <h4>{t("banner.large-bag")}</h4>}
-      {filter === "medium-bag" && <h4>{t("banner.medium-bag")}</h4>}
-      {filter === "small-bag" && <h4>{t("banner.small-bag")}</h4>}
+      <div className="ms-4 mt-3">
+        <a href="/">{t("new_arrivals")}</a> -{" "}
+        {filter === "all" && <a href="/"> {t("banner.allBag")}</a>}
+        {filter === "large-bag" && <a href="/">{t("banner.large-bag")}</a>}
+        {filter === "medium-bag" && <a href="/">{t("banner.medium-bag")}</a>}
+        {filter === "small-bag" && <a href="/">{t("banner.small-bag")}</a>}
+      </div>
 
       <ProductShowing
         keyword={filter === "all" ? null : filter}

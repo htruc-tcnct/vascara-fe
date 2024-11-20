@@ -19,7 +19,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../style/product-showing.css";
+import { Range } from "react-range";
 import { useCart } from "../../context/CartContext";
 const formatCurrency = (price) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -28,31 +30,6 @@ const formatCurrency = (price) => {
   }).format(price);
 };
 
-const parsePriceRange = (priceRange) => {
-  if (priceRange.startsWith("<")) {
-    return { min: 0, max: parseInt(priceRange.replace(/[^\d]/g, ""), 10) };
-  } else if (priceRange.startsWith(">")) {
-    return {
-      min: parseInt(priceRange.replace(/[^\d]/g, ""), 10),
-      max: Infinity,
-    };
-  } else {
-    const [min, max] = priceRange
-      .split("-")
-      .map((str) => parseInt(str.replace(/[^\d]/g, ""), 10));
-    return { min, max };
-  }
-};
-const formatPriceRange = (priceRange) => {
-  const { min, max } = parsePriceRange(priceRange);
-  if (min === 0) {
-    return `< ${formatCurrency(max)}`;
-  } else if (max === Infinity) {
-    return `> ${formatCurrency(min)}`;
-  } else {
-    return `${formatCurrency(min)} - ${formatCurrency(max)}`;
-  }
-};
 function ProductShowing({ keyword, filters, categoryId }) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
@@ -72,10 +49,52 @@ function ProductShowing({ keyword, filters, categoryId }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, settotalPages] = useState(1);
   const [ProductTotal, setProductTotal] = useState(0);
-  const productsPerPage = 20;
+  const productsPerPage = 16;
   const [showPageInput, setShowPageInput] = useState(false);
   const [inputPage, setInputPage] = useState("");
   const isAuthenticated = localStorage.getItem("token");
+  const [values, setValues] = useState([0, 1500000]);
+  const minLimit = 0;
+  const maxLimit = 1500000;
+  const step = 10000;
+  const [loadedImages, setLoadedImages] = useState({});
+  const navigate = useNavigate();
+
+  const goToDetail = (product) => {
+    navigate(`/product-id/${product.product_id}`);
+  };
+  useEffect(() => {
+    const preloadImages = async () => {
+      const loadImage = (src) => {
+        return new Promise((resolve) => {
+          const img = new window.Image();
+          img.src = src;
+          img.onload = () => resolve(src);
+          img.onerror = () => resolve(src); // Resolve even if there's an error
+        });
+      };
+
+      const imagePromises = products.map((product) => {
+        const productImage = product.isHovered
+          ? product.hover_image_url
+          : product.main_image_url;
+        return loadImage(productImage).then((src) => ({
+          id: product.product_id,
+          src,
+        }));
+      });
+
+      const loadedImagesArray = await Promise.all(imagePromises);
+      const loadedImagesMap = loadedImagesArray.reduce((acc, { id, src }) => {
+        acc[id] = src;
+        return acc;
+      }, {});
+
+      setLoadedImages(loadedImagesMap);
+    };
+
+    preloadImages();
+  }, [products]);
   const handleQuantityChange = (event) => {
     const value = Math.max(0, event.target.value); // Đảm bảo số lượng ít nhất là 1
     setQuantity(value);
@@ -145,17 +164,23 @@ function ProductShowing({ keyword, filters, categoryId }) {
             : "";
 
         setSelectedSort(sortOption);
+        const categoryID =
+          categoryId === undefined ? selectedCategory : categoryId;
 
         const filterParams = new URLSearchParams({
           limit: productsPerPage,
           page,
-          ...(categoryId && { category_id: categoryId }),
-
-          ...(filters?.priceRange && { priceRange: filters.priceRange }),
+          ...(categoryID && { category_id: categoryID }),
+          ...(values && {
+            priceRange: `${values[0]}-${values[1]}`,
+          }),
           ...(sortSelect && { sortSelect }),
-          ...(keyword && { keyword }), // Add keyword as a query parameter if provided
+          ...(keyword && { keyword }),
         }).toString();
-        const filterToSearch = filters ? filters : filterParams;
+
+        const filterToSearch = filterParams;
+        console.log(`${values[0]}-${values[1]}`);
+
         const response = await axios.get(
           `${process.env.REACT_APP_SERVER_URL}/products/filter?${filterToSearch}`
         );
@@ -166,7 +191,6 @@ function ProductShowing({ keyword, filters, categoryId }) {
           return { ...product, currentTranslation: translation };
         });
         setProducts(updatedProducts);
-        setShowFilter(false);
         setProductTotal(response.data.pagination.totalProducts);
         const totalProducts = response.data.pagination.totalProducts;
         setAllProducts(totalProducts);
@@ -181,7 +205,14 @@ function ProductShowing({ keyword, filters, categoryId }) {
         setLoading(false);
       }
     },
-    [productsPerPage, selectedCategory, selectedPrices, keyword, filters]
+    [
+      productsPerPage,
+      selectedCategory,
+      selectedPrices,
+      keyword,
+      filters,
+      values,
+    ]
   );
 
   useEffect(() => {
@@ -190,9 +221,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
 
   useEffect(() => {
     if (selectedProduct) {
-      selectedProduct.product_images.forEach((image) => {
-        console.log("Image URL:", image.image_url);
-      });
+      selectedProduct.product_images.forEach((image) => {});
     }
   }, [selectedProduct]);
   const handleCategorySelect = (categoryId) => {
@@ -216,7 +245,6 @@ function ProductShowing({ keyword, filters, categoryId }) {
   }, [i18n.language, allProducts, currentPage]); // Thêm `products` làm phụ thuộc
 
   const handleOpenModal = (product) => {
-    console.log("Selected product:", product);
     setSelectedProduct(product);
     setSelectedSize(null);
     setShowModal(true);
@@ -252,10 +280,17 @@ function ProductShowing({ keyword, filters, categoryId }) {
   // Hàm định dạng tiền theo VND
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    console.log(allProducts);
   };
+
   return (
-    <Container fluid className="mt-5">
+    <Container
+      fluid
+      className="mt-3"
+      style={{
+        minHeight: "2300px",
+        width: "100%",
+      }}
+    >
       <div className="d-flex align-items-center row border-top border-bottom py-2">
         <div
           className="col-lg-3 col-6 text-center border-end text-style"
@@ -284,29 +319,73 @@ function ProductShowing({ keyword, filters, categoryId }) {
                     className="filter-button"
                     onClick={() => handleCategorySelect(category.category_id)}
                   >
-                    {/* Chọn ngôn ngữ hiển thị */}
                     {i18n.language === "en" ? category.name_en : category.name}
                   </Button>
                 ))}
               </div>
 
               <h5 className="filter-section-title mt-4">{t("banner.price")}</h5>
-              <div>
-                {[
-                  "< 600000",
-                  "600000 - 700000",
-                  "700000 - 900000",
-                  "> 900000",
-                ].map((priceRange, index) => (
-                  <Form.Check
-                    key={index}
-                    type="radio"
-                    label={formatPriceRange(priceRange)}
-                    checked={selectedPrices === priceRange}
-                    onChange={() => setSelectedPrices(priceRange)}
-                    className="custom-checkbox"
-                  />
-                ))}
+              <div className="dual-range-slider">
+                <Range
+                  values={values}
+                  step={step}
+                  min={minLimit}
+                  max={maxLimit}
+                  onChange={(newValues) => {
+                    setValues(newValues);
+                    console.log(newValues);
+                  }} // Cập nhật giá trị ngay lập tức khi kéo
+                  renderTrack={({ props, children }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "6px",
+                        width: "100%",
+                        background: "#ddd",
+                        position: "relative",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          height: "6px",
+                          background: "#5c5c5c",
+                          borderRadius: "3px",
+                          left: `${
+                            ((values[0] - minLimit) / (maxLimit - minLimit)) *
+                            100
+                          }%`,
+                          right: `${
+                            100 -
+                            ((values[1] - minLimit) / (maxLimit - minLimit)) *
+                              100
+                          }%`,
+                        }}
+                      />
+                      {children}
+                    </div>
+                  )}
+                  renderThumb={({ props, index }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "16px",
+                        width: "16px",
+                        borderRadius: "50%",
+                        backgroundColor: "#5c5c5c",
+                        cursor: "pointer",
+                      }}
+                    />
+                  )}
+                />
+                <div className="text-center mt-2">
+                  <span>
+                    {values[0].toLocaleString()} VND -{" "}
+                    {values[1].toLocaleString()} VND
+                  </span>
+                </div>
               </div>
             </div>
             <Modal
@@ -414,17 +493,17 @@ function ProductShowing({ keyword, filters, categoryId }) {
       <div className="d-flex row mt-5">
         {loading ? (
           <div className="text-center my-4">
-            <Spinner animation="border" role="status">
+            {/* <Spinner animation="border" role="status">
               <span className="visually-hidden">Loading...</span>
-            </Spinner>
+            </Spinner> */}
           </div>
         ) : (
-          <div className="d-flex row mt-5">
+          <div className="d-flex row mt-5 loadImage">
             {products.map((product) => {
               const productName = product.currentTranslation?.name;
-              const productImage = product.isHovered
-                ? product.hover_image_url
-                : product.main_image_url;
+              const productImage =
+                loadedImages[product.product_id] || product.main_image_url;
+
               return (
                 <div
                   key={product.product_id}
@@ -439,6 +518,8 @@ function ProductShowing({ keyword, filters, categoryId }) {
                       src={productImage}
                       alt={productName}
                       className="product-image"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => goToDetail(product)}
                     />
                     <div
                       className="open-quickview"
@@ -457,7 +538,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
           </div>
         )}
         {/* Pagination Component */}
-        <Pagination className="mt-4 pagination">
+        <Pagination className="mt-4 pagination" style={{ minHeight: "45px" }}>
           <Pagination.First onClick={() => handlePageChange(1)} />
 
           {/* Previous Page */}
@@ -551,6 +632,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
                           src={image.image_url}
                           alt={`Slide ${image.image_id}`}
                           className="d-block w-100 modal-product-image"
+                          loading="lazy" // Enables lazy loading
                         />
                       </Carousel.Item>
                     ))}
@@ -562,7 +644,8 @@ function ProductShowing({ keyword, filters, categoryId }) {
                       "https://via.placeholder.com/150"
                     }
                     alt={selectedProduct.currentTranslation?.name}
-                    className="d-block w-100 modal-product-image"
+                    className="d-block w-100 modal-product-image "
+                    loading="lazy"
                   />
                 )}
               </div>

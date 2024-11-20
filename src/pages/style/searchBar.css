@@ -1,0 +1,79 @@
+.offcanvas-fullscreen {
+    width: 100% !important;
+    height: 64% !important;
+    max-width: 100% !important;
+    max-height: 64% !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index: 1055;
+    overflow: auto;
+}
+
+.offcanvas-expanded {
+    height: 100% !important;
+    max-height: 100% !important;
+}
+
+/* Áp dụng padding cho nội dung */
+.offcanvas-body {
+    padding: 0 150px;
+    color: #757575;
+    /* Đặt màu chữ cho toàn bộ nội dung */
+}
+
+/* Loại bỏ viền khi input được focus */
+.form-control:focus {
+    outline: none;
+    /* Xóa viền focus mặc định */
+    box-shadow: none;
+    /* Xóa hiệu ứng bóng */
+    border-color: transparent;
+    /* Hoặc giữ màu viền mặc định */
+}
+
+/* Kiểu dáng cho tiêu đề */
+h5 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #757575;
+    /* Màu chữ */
+}
+
+/* Danh sách tìm kiếm phổ biến */
+ul li {
+    margin-bottom: 10px;
+    cursor: pointer;
+    color: #757575;
+    /* Màu chữ */
+}
+
+ul li:hover {
+    text-decoration: underline;
+}
+
+/* Kiểu dáng cho card */
+.card {
+    border: none;
+}
+
+.card img {
+    object-fit: cover;
+    height: 150px;
+    /* Điều chỉnh chiều cao ảnh */
+}
+
+.card-text {
+    font-size: 14px;
+    text-align: center;
+    color: #757575;
+    /* Màu chữ */
+}
+
+/* Hiệu ứng hover cho highlight-card */
+.highlight-card:hover {
+    text-decoration: underline;
+    color: #757575;
+    /* Màu chữ khi hover */
+}

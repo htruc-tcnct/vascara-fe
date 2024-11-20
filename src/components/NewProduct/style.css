@@ -1,0 +1,58 @@
+.product-image{
+    width: 30%;
+    height: 10%;
+}
+
+.modal-product-image {
+    width: 100%;
+    height: auto;
+}
+.open-quickview {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.product-image-div:hover .open-quickview {
+    opacity: 1;
+}
+.product-container{
+    height: 20%;
+    width: 25%;
+}
+.loadImage{
+    height: 100%;
+}
+.product-container {
+    /* Đảm bảo mỗi sản phẩm có chiều cao cố định và phù hợp với responsive */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 400px;
+    /* chiều cao mặc định */
+}
+
+.product-image-div {
+    position: relative;
+    width: 100%;
+    padding-top: 60%;
+    /* Tạo tỉ lệ 3:2 cho hình ảnh sản phẩm, có thể thay đổi */
+    overflow: hidden;
+}
+
+.product-image {
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.name-product,
+.price-product {
+    margin-top: 10px;
+    text-align: center;
+}
+

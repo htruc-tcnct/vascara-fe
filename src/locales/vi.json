@@ -95,5 +95,69 @@
      "or": "và",
      "confirm_password": "Nhập lại mật khẩu:",
      "password_mismatch": "Mật khẩu không trùng khớp"
+  },
+  "product-detail":{
+    "Price": "Giá",
+    "Size": "Kích cỡ",
+    "Quantity": "Số lượng",
+    "Delete": "Xóa",
+    "empty-cart": "Giỏ hàng đang trống",
+    "go-to-cart": "Đến giỏ hàng",
+    "freeship": " Miễn phí giao hàng cho đơn từ 899K (tối đa 30K)",
+    "totalOrder": "Giá trị đơn hàng",
+    "reduce-price": "Giảm tiền",
+    "totalPrice":"Thành tiền",
+    "go-to-check-out": "Đi đến thanh toán",
+    "your-cart": "Giỏ hàng của bạn"
+  },
+  "profile":{
+    "profile": "Hồ sơ",
+    "hello":"Xin chào ",
+    "slogan": "Chào mừng bạn đến, Vascara!",
+    "introduce": "Đây là trang tổng quan về tài khoản cá nhân của bạn gồm thông tin chi tiết giao dịch và ưu đãi hạng thành viên.",
+    "my-profile":"Tài khoản của tôi",
+    "history-ordered":"Lịch sử mua hàng",
+    "voucher": "Mã giảm giá",
+    "my-infor":"Thông tin cá nhân",
+    "my-address": "Địa chỉ",
+    "change-pass": "Đổi mật khẩu",
+    "logout": "Đăng xuất",
+    "current-pass":"Mật khẩu hiện tại",
+  "new-pass":"Mật khẩu mới",
+  "new-pass-again":"Nhập lại mật khẩu mới",
+  "update": "Cập nhật",
+   "guest": "",
+     "personal-info":"Thông tin cá nhân",
+  "full-name": "Họ và tên: ",
+  "phone-number": "Số điện thoại: ",
+  "email":"Email: ",
+  "birth":"Ngày sinh: ",
+  "province":"Tỉnh/ Thành phố: ",
+  "pick-province":"Chọn tỉnh/ thành phố",
+  "distict":"Quận/ Huyện: ",
+   "pick-distict":"Chọn quận/ huyện",
+  "ward":"Phường/ Xã: ",
+   "pick-ward":"Chọn phường/ xã",
+   "address":"Địa chỉ cụ thể: "
+  
+  },
+
+    "detail-product":{
+    "buy-now":"Mua ngay",
+    "add-to-cart": "Thêm vào giỏ hàng",
+    "your-vouncher":"Ưu đãi của bạn",
+    "inf-product":"Mô tả sản phẩm",
+    "same-product":"Sản phẩm tương tự",
+    "vouncher1":"Miễn phí giao hàng cho đơn từ 899K (tối đa 30K)",
+    "vouncher2":" Mua hàng online - Miễn phí trả hàng hoàn tiền tại cửa hàng trong 7 ngày. ",
+    "go-to-detail":"Xem chi tiết",
+    "see-more":"Xem thêm sản phẩm"
+  },
+  "home":{
+    "bag-collections":"Bộ sưu tập túi",
+    "shoe-collections":"Bộ sưu tập giày",
+    "wallet-collections":"Bộ sưu tập ví",
+    "go-to-see":"Xem toàn bộ",
+    "slogans":"Đồng hành cùng người yêu thời trang"
   }
 }

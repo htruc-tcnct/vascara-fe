@@ -73,7 +73,7 @@
   "large-bag": "Large Bags",
   "medium-bag": "Medium Bags",
   "small-bag": "Small Bags",
-    "allWall": "Tất cả ví",
+    "allWall": "All wallets",
   "hand-wall": "Hand Wallet",
   "mini-wall": "Mini Wallet",
   "leather-wall": "Leather Wallet"
@@ -98,6 +98,70 @@
      "password_mismatch": "Pasword mistmatch!"
 
 
-  }
+  },
+  "product-detail":{
+    "Price": "Price",
+    "Size": "Size",
+    "Quantity": "Quantity",
+    "Delete": "Delete",
+    "empty-cart": "Your cart is empty!",
+    "go-to-cart": "Go to cart",
+     "freeship": " Free shipping for orders from 899K (maximum 30K)",
+    "totalOrder": "Total order amount",
+    "reduce-price": "Discount",
+    "totalPrice":"Total amount",
+    "go-to-check-out": "Go to checkout",
+    "your-cart": "Your cart"
+  },  "profile": {
+  "profile": "Profile",
+  "hello": "Hello ",
+  "slogan": "Welcome to Vascara!",
+  "introduce": "This is an overview of your personal account, including detailed transaction information and member rank benefits.",
+  "my-profile": "My Account",
+  "history-ordered": "Order History",
+  "voucher": "Discount Codes",
+  "my-infor": "Personal Information",
+  "my-address": "Address",
+  "change-pass": "Change Password",
+  "logout": "Logout",
+  "current-pass":"Current Password",
+  "new-pass":"New Password",
+  "new-pass-again":"Enter new password again",
+  "update": "Update",
+  "guest": "",
+  "personal-info": "Personal Information",
+  "full-name": "Full Name: ",
+  "phone-number": "Phone Number: ",
+  "email": "Email: ",
+  "birth": "Date of Birth: ",
+  "province": "Province/City: ",
+  "pick-province": "Select Province/City",
+  "distict": "District: ",
+  "pick-distict": "Select District",
+  "ward": "Ward/Commune: ",
+  "pick-ward": "Select Ward/Commune",
+  "address": "Detailed Address: "
+
+  },
+   "detail-product": {
+    "buy-now": "Buy Now",
+    "add-to-cart": "Add to Cart",
+    "your-vouncher": "Your Voucher",
+    "inf-product": "Product Description",
+     "same-product": "Similar Products",
+    "vouncher1": "Free shipping on orders over 899K (up to 30K)",
+    "vouncher2": "Online shopping - Free returns and full refund in-store within 7 days. ",
+    "go-to-detail": "See Details",
+    "see-more":"See more"
+  },
+  "home": {
+  "bag-collections": "Bag Collections",
+  "shoe-collections": "Shoe Collections",
+  "wallet-collections": "Wallet Collections",
+  "go-to-see": "See All",
+  "slogans": "Accompanying fashion lovers"
+
+
+}
 
 }

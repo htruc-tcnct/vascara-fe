@@ -12,10 +12,13 @@ const WallComponent = () => {
   const categoryId = 2;
   return (
     <div>
-      {filter === "all" && <h4> {t("banner.allWall")}</h4>}
-      {filter === "hand" && <h4>{t("banner.hand-wall")}</h4>}
-      {filter === "mini" && <h4>{t("banner.mini-wall")}</h4>}
-      {filter === "leather" && <h4>{t("banner.leather-wall")}</h4>}
+      <div className="ms-4 mt-3">
+        <a href="/">{t("new_arrivals")}</a> -{" "}
+        {filter === "all" && <a href=""> {t("banner.allWall")}</a>}
+        {filter === "hand" && <a href="">{t("banner.hand-wall")}</a>}
+        {filter === "mini" && <a href="">{t("banner.mini-wall")}</a>}
+        {filter === "leather" && <a href="">{t("banner.leather-wall")}</a>}
+      </div>
 
       <ProductShowing
         keyword={filter === "all" ? null : filter}

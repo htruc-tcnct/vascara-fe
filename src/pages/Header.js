@@ -29,6 +29,7 @@ import LanguageSelector from "../middleware/changeLanguge";
 import { useCart } from "../context/CartContext";
 import CartModal from "../components/CartModal/CartModal";
 import { getUserIdFromToken } from "../utils/auth";
+import { useSearchBar } from "../context/searchBarContext";
 function OffCanvasExample({ show, handleClose }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -178,6 +179,7 @@ function Header({ scrollDirection }) {
     const idFromToken = getUserIdFromToken();
     setUserId(idFromToken);
   }, []);
+  const { openSearchBar } = useSearchBar();
   useEffect(() => {
     // Kiểm tra token trong localStorage khi component mount
     const storedToken = localStorage.getItem("token");
@@ -196,7 +198,6 @@ function Header({ scrollDirection }) {
       localStorage.setItem("idUser", idUser);
       login(token); // Cập nhật trạng thái đăng nhập và lưu token qua AuthContext
 
-      alert("Login successful!");
       navigate("/"); // Chuyển hướng ngay lập tức
       window.location.reload();
     } catch (error) {
@@ -214,6 +215,7 @@ function Header({ scrollDirection }) {
     localStorage.removeItem("token");
     localStorage.removeItem("cartCount");
     setToken(null);
+    navigate("/");
     window.location.reload();
   };
   const handleMouseLeave = () => {
@@ -241,12 +243,15 @@ function Header({ scrollDirection }) {
             onClick={handleToogle}
           />
           <OffCanvasExample show={showToogle} handleClose={handleClose} />
-          <Navbar.Collapse className="d-lg-flex d-none">
+          <Navbar.Collapse
+            className="d-lg-flex d-none"
+            style={{ minHeight: "68px", minWidth: "130px" }}
+          >
             <Row className="w-100">
               <Col xs={3} className="d-flex align-items-center">
                 <div className="d-flex flex-column align-items-center">
                   <img
-                    src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
+                    src="https://res.cloudinary.com/dite5ojuq/image/upload/v1731597859/vascara_k3rj7c.png"
                     alt=""
                     style={{ width: "100px" }}
                   />
@@ -448,6 +453,7 @@ function Header({ scrollDirection }) {
                 <Navbar className="m-2">
                   <FontAwesomeIcon
                     className="icon-pointer"
+                    onClick={openSearchBar}
                     icon={faMagnifyingGlass}
                   />
                 </Navbar>
@@ -579,7 +585,7 @@ function Header({ scrollDirection }) {
           </Navbar.Collapse>
           <Navbar className="d-lg-none ">
             <img
-              src="https://www.vascara.com/uploads/web/900/Logo/vascara.png"
+              src="https://res.cloudinary.com/dite5ojuq/image/upload/v1731597859/vascara_k3rj7c.png"
               alt=""
               style={{ width: "80px" }}
             />

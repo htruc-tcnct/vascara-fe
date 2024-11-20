@@ -1,7 +1,7 @@
 /* components/CartDropdown.css */
 
 .cart-dropdown {
-    width: 300px;
+    width: 400px;
     max-height: 400px;
     overflow-y: auto;
     padding: 15px;
@@ -22,11 +22,11 @@
 }
 
 .item-image {
-    width: 50px;
-    height: 50px;
+    height: 100px;
     object-fit: cover;
     border-radius: 4px;
 }
+
 
 .item-details {
     flex-grow: 1;
@@ -41,7 +41,7 @@
 .item-color-size,
 .item-price,
 .item-quantity {
-    font-size: 12px;
+    font-size: 14px;
     margin: 0;
 }
 
@@ -58,7 +58,13 @@
     padding-top: 10px;
     font-size: 14px;
 }
-
+.item-details-inline {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    /* Hoặc kích thước bạn mong muốn */
+    margin: 0;
+}
 .view-cart-btn {
     width: 100%;
     text-align: center;
@@ -69,4 +75,39 @@
 }
 .view-cart-btn:hover {
    border: #000 solid 1px;
+}
+.cart-item .item-color-size,
+.cart-item .item-price {
+    display: inline-block;
+    margin-bottom: 0;
+    /* Remove extra margin at the bottom */
+    font-size: 12px;
+    /* Adjust the font size if needed */
+}
+
+.cart-item .item-price {
+    margin-left: 10px;
+    /* Add space between Size and Price */
+}
+.cart-items-container {
+    max-height: 300px;
+    /* Giới hạn chiều cao nội dung */
+    overflow-y: auto;
+    /* Thêm thanh cuộn nếu nội dung vượt quá chiều cao */
+    position: relative;
+    /* Đảm bảo footer cố định trong container */
+}
+
+.cart-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    /* Màu nền để đảm bảo nút hiển thị rõ */
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    /* Đường phân cách với nội dung bên trên */
+    text-align: center;
+    /* Canh giữa nút */
+    z-index: 10;
+    /* Đảm bảo footer nổi lên trên nội dung */
 }

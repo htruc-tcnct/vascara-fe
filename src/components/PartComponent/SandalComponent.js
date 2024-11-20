@@ -12,9 +12,12 @@ const SandalComponent = () => {
   const categoryId = 1;
   return (
     <div>
-      {filter === "all" && <h4> {t("banner.allPro")}</h4>}
-      {filter === "sandal" && <h4>{t("banner.sandal")}</h4>}
-      {filter === "sneaker" && <h4>{t("banner.sneaker")}</h4>}
+      <div className="ms-4 mt-3">
+        <a href="/">{t("new_arrivals")}</a> -{" "}
+        {filter === "all" && <a href="/"> {t("banner.allPro")}</a>}
+        {filter === "sandal" && <a href="/">{t("banner.sandal")}</a>}
+        {filter === "sneaker" && <a href="/">{t("banner.sneaker")}</a>}
+      </div>
 
       <ProductShowing
         keyword={filter === "all" ? null : filter}
