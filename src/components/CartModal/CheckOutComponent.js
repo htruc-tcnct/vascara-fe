@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Button, Alert } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Alert,
+  Form,
+} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleCheck,
@@ -10,7 +18,7 @@ import {
 import "./CheckOutComponent.css";
 import { useTranslation } from "react-i18next";
 import AddressFormModal from "./AddressFormModal";
-
+import axios from "axios";
 function CheckOutComponent() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,16 +29,42 @@ function CheckOutComponent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [addressAdded, setAddressAdded] = useState(false);
-  const handleAddressSubmit = (newAddress) => {
-    console.log("Địa chỉ mới:", newAddress);
-    setAddressAdded(true);
-  };
+  const [addressList, setAddressList] = useState([]); // Danh sách địa chỉ
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const handleCheckout = () => {
+    console.log(selectedAddressId, " ");
+  };
+  const handleAddressSubmit = (newAddress) => {
+    setAddressList((prev) => [...prev, newAddress]); // Thêm địa chỉ mới vào danh sách
+    setSelectedAddressId(newAddress.id); // Đặt địa chỉ mới làm địa chỉ được chọn
+    setAddressAdded(true);
+    fetchAddresses();
+  };
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
+  const fetchAddresses = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8081/address/get-address",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // console.log(response.data.data.address);
+      setAddressList(response.data.data.address);
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    }
+  };
+  useEffect(() => {
+    if (currentStep === 2) {
+      fetchAddresses();
+    }
+  }, [currentStep, showModal]);
   const handleNextStep = () => {
     setErrorMessage("");
 
@@ -104,6 +138,19 @@ function CheckOutComponent() {
             <Card.Header>2. Địa chỉ</Card.Header>
             <Card.Body>
               <p>Thông tin người nhận hàng</p>
+              <Form>
+                {addressList.map((address) => (
+                  <Form.Check
+                    key={address.address_id}
+                    type="radio"
+                    label={`${address.province_name} - ${address.district_name}, ${address.ward_name}, ${address.specific_address}`}
+                    name="address"
+                    value={address.address_id}
+                    checked={selectedAddressId === address.address_id}
+                    onChange={() => setSelectedAddressId(address.address_id)}
+                  />
+                ))}
+              </Form>
               <Button
                 variant="outline-secondary"
                 className="w-100 mb-3"
@@ -112,9 +159,6 @@ function CheckOutComponent() {
                 Thêm thông tin người nhận hàng{" "}
                 <FontAwesomeIcon icon={faPlusCircle} />
               </Button>
-              {addressAdded && (
-                <p className="text-success">Địa chỉ đã được thêm!</p>
-              )}
             </Card.Body>
             <AddressFormModal
               show={showModal}
@@ -138,7 +182,6 @@ function CheckOutComponent() {
     }
   };
 
-  const openFormAddress = () => {};
   return (
     <Container className="my-4 px-5">
       {/* Thanh tiến trình */}
@@ -183,10 +226,7 @@ function CheckOutComponent() {
                 Tiếp tục
               </Button>
             ) : (
-              <Button
-                variant="success"
-                onClick={() => alert("Thanh toán thành công!")}
-              >
+              <Button variant="success" onClick={handleCheckout}>
                 Hoàn tất thanh toán
               </Button>
             )}

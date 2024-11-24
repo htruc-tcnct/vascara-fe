@@ -4,16 +4,59 @@ import axios from "axios";
 
 function AddressFormModal({ show, onHide, onSubmit }) {
   const [address, setAddress] = useState({
-    name: "",
-    phone: "",
     province: "",
     district: "",
     ward: "",
+    specific: "",
   });
 
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
+  const [user, setUser] = useState([]);
+  const [addressForm, setAddressForm] = useState([]);
+
+  const token = localStorage.getItem("token");
+  const fetchInfor = async () => {
+    const result = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/address/get-address`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(result.data.data);
+    setUser(result.data.data.user);
+    setAddressForm(result.data.data.address);
+  };
+  const addNewAddress = async () => {
+    try {
+      const addressNew = {
+        province_code: address.province,
+        district_code: address.district,
+        ward_code: address.ward,
+        specific_address: address.specific,
+      };
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/address`,
+        addressNew,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Address added successfully:", response.data);
+      onSubmit(response.data); // Pass the response data to the parent
+      onHide(); // Close the modal
+    } catch (error) {
+      console.error("Error adding address:", error);
+    }
+  };
+  useEffect(() => {
+    fetchInfor();
+  }, []); // Empty dependency array ensures it runs only once
 
   // Fetch Tỉnh/Thành phố
   useEffect(() => {
@@ -92,7 +135,7 @@ function AddressFormModal({ show, onHide, onSubmit }) {
               type="text"
               placeholder="Vd: Nguyễn Văn A"
               name="name"
-              value={address.name}
+              value={user.name}
               onChange={handleChange}
               required
             />
@@ -105,7 +148,7 @@ function AddressFormModal({ show, onHide, onSubmit }) {
               type="text"
               placeholder="Vd: 0123456789"
               name="phone"
-              value={address.phone}
+              value={user.phonenumber}
               onChange={handleChange}
               required
             />
@@ -166,12 +209,22 @@ function AddressFormModal({ show, onHide, onSubmit }) {
               ))}
             </Form.Select>
           </Form.Group>
-
+          <Form.Group className="mb-3" controlId="formName">
+            <Form.Label>Địa chỉ cụ thể:</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Vd: Đặng Vũ Hỷ"
+              name="specific"
+              value={address.specific}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
           <div className="d-flex justify-content-between">
             <Button variant="secondary" onClick={onHide}>
               Trở lại
             </Button>
-            <Button variant="dark" type="submit">
+            <Button variant="dark" type="submit" onClick={addNewAddress}>
               Thêm địa chỉ
             </Button>
           </div>

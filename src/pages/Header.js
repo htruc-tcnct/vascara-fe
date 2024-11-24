@@ -11,6 +11,8 @@ import {
   Button,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -195,13 +197,28 @@ function Header({ scrollDirection }) {
       });
 
       const { token, idUser } = response.data;
-      localStorage.setItem("idUser", idUser);
-      login(token); // Cập nhật trạng thái đăng nhập và lưu token qua AuthContext
 
-      navigate("/"); // Chuyển hướng ngay lập tức
+      // Store token and user ID in localStorage
+      localStorage.setItem("idUser", idUser);
+      localStorage.setItem("token", token);
+
+      // Decode the JWT to get the role
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.role;
+
+      login(token); // Update login status and save token via AuthContext
+
+      // Redirect based on the user's role
+      if (userRole === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+
+      // Optional: Refresh the page (if required)
       window.location.reload();
     } catch (error) {
-      setError("Invalid email or password"); // Thông báo lỗi nếu đăng nhập thất bại
+      setError("Invalid email or password"); // Show error message if login fails
     }
   };
   const togglePasswordVisibility = () => {

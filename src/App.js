@@ -9,6 +9,7 @@ import Forgotten_Password from "../src/components/register/Forgotten_Password";
 import ResetPassword from "../src/components/register/ResetPassword";
 import BagComponent from "../src/components/PartComponent/BagComponent";
 import SandalComponent from "../src/components/PartComponent/SandalComponent";
+import AdminDashboard from "./AdminDashboard";
 import WallComponent from "../src/components/PartComponent/WallComponent";
 import CartComponent from "../src/components/CartModal/CartComponent";
 import CheckOutComponent from "../src/components/CartModal/CheckOutComponent";
@@ -164,6 +165,40 @@ function AppContent({ scrollDirection }) {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="/admin/manage-users"
+            element={
+              <ProtectedRoute role="admin">
+                <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-products"
+            element={
+              <ProtectedRoute role="admin">
+                <ManageProducts />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-orders"
+            element={
+              <ProtectedRoute role="admin">
+                <ManageOrders />
+              </ProtectedRoute>
+            }
+          /> */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
