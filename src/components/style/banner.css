@@ -1,0 +1,35 @@
+/* Đảm bảo Container không tràn */
+.custom-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Slider chính */
+.main-slider {
+    margin-top: 20px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* Slick slider chỉnh sửa để không tràn */
+.slick-slider {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.slick-list {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.slick-track {
+    display: flex;
+}
+
+/* Spotlight hình ảnh */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}

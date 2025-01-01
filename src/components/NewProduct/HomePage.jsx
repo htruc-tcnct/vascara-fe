@@ -1,9 +1,7 @@
-import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import React from "react";
 import Slider from "react-slick";
-import "../style/banner.css"; // CSS tuỳ chỉnh
-
 import bn1 from "../../assets/bn1.png";
 import bn2 from "../../assets/bn2.jpg";
 import bn3 from "../../assets/bn3.png";
@@ -16,10 +14,8 @@ import spotlight2 from "../../assets/spot2.jpg";
 import spotlight3 from "../../assets/spot3.jpg";
 import spotlight4 from "../../assets/spot4.jpg";
 
-function Banner() {
+function HomePage() {
   const { t } = useTranslation();
-
-  // Cài đặt cho slider chính
   const settings = {
     dots: false,
     infinite: true,
@@ -28,70 +24,74 @@ function Banner() {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2000,
-    arrows: false,
   };
-
-  // Cài đặt cho slider Spotlight
   const settingsSpotlight = {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 4, // Mặc định hiển thị 4 ảnh trên màn hình lớn
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
-    arrows: false,
     responsive: [
       {
-        breakpoint: 1200,
-        settings: { slidesToShow: 3, slidesToScroll: 1 },
+        breakpoint: 1024, // Dưới 1024px (tablet, laptop nhỏ)
+        settings: {
+          slidesToShow: 3, // Hiển thị 3 ảnh
+          slidesToScroll: 1,
+        },
       },
       {
-        breakpoint: 768,
-        settings: { slidesToShow: 2, slidesToScroll: 1 },
+        breakpoint: 768, // Dưới 768px (điện thoại ngang)
+        settings: {
+          slidesToShow: 2, // Hiển thị 2 ảnh
+          slidesToScroll: 1,
+        },
       },
       {
-        breakpoint: 480,
-        settings: { slidesToShow: 1, slidesToScroll: 1 },
+        breakpoint: 480, // Dưới 480px (điện thoại dọc)
+        settings: {
+          slidesToShow: 2, // Hiển thị 2 ảnh
+          slidesToScroll: 1,
+        },
       },
     ],
   };
 
   return (
-    <Container fluid className="custom-container">
-      {/* Slider chính */}
-      <div className="main-slider">
-        <Slider {...settings}>
-          <img
-            style={{ objectFit: "contain", width: "100%" }}
-            src={bn1}
-            alt="Banner 1"
-          />
-          <img
-            style={{ objectFit: "contain", width: "100%" }}
-            src={bn2}
-            alt="Banner 2"
-          />
-          <img
-            style={{ objectFit: "contain", width: "100%" }}
-            src={bn3}
-            alt="Banner 3"
-          />
-          <img
-            style={{ objectFit: "contain", width: "100%" }}
-            src={bn4}
-            alt="Banner 4"
-          />
-        </Slider>
-      </div>
+    <Container>
+      {/* Slider Section */}
+      <Slider {...settings}>
+        <img
+          style={{ objectFit: "contain", width: "100%" }}
+          src={bn1}
+          alt="1"
+        />
+        <img
+          style={{ objectFit: "contain", width: "100%" }}
+          src={bn2}
+          alt="2"
+        />
+        <img
+          style={{ objectFit: "contain", width: "100%" }}
+          src={bn3}
+          alt="3"
+        />
+        <img
+          style={{ objectFit: "contain", width: "100%" }}
+          src={bn4}
+          alt="4"
+        />
+      </Slider>
 
-      {/* Bộ sưu tập */}
+      {/* Collection Section */}
       <div className="mt-5 px-3">
         <Row>
+          {/* Collection 1 */}
           <Col md={4} className="text-center">
             <img
               src={tui}
-              alt="Túi"
+              alt="Bộ sưu tập túi"
               style={{ width: "100%", objectFit: "cover" }}
             />
             <h5 className="mt-3">{t("home.bag-collections")}</h5>
@@ -102,10 +102,12 @@ function Banner() {
               {t("home.go-to-see")}
             </a>
           </Col>
+
+          {/* Collection 2 */}
           <Col md={4} className="text-center">
             <img
               src={giay}
-              alt="Giày"
+              alt="Bộ sưu tập giày"
               style={{ width: "100%", objectFit: "cover" }}
             />
             <h5 className="mt-3">{t("home.shoe-collections")}</h5>
@@ -116,10 +118,12 @@ function Banner() {
               {t("home.go-to-see")}
             </a>
           </Col>
+
+          {/* Collection 3 */}
           <Col md={4} className="text-center">
             <img
               src={vi}
-              alt="Ví"
+              alt="Bộ sưu tập Ví"
               style={{ width: "100%", objectFit: "cover" }}
             />
             <h5 className="mt-3">{t("home.wallet-collections")}</h5>
@@ -133,7 +137,7 @@ function Banner() {
         </Row>
       </div>
 
-      {/* Spotlight */}
+      {/* Vascara Spotlight Section */}
       <div className="mt-5 text-center">
         <h3>Vascara Spotlight</h3>
         <p className="text-muted">{t("home.slogans")}</p>
@@ -172,4 +176,4 @@ function Banner() {
   );
 }
 
-export default Banner;
+export default HomePage;

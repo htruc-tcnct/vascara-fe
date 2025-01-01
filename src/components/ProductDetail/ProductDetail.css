@@ -319,3 +319,7 @@ color:#F5F5F5 !important;
     background-color: #e3e4e0 !important;
     border-color: #0056b3 !important;
 }
+.button.slick-arrow.slick-next,
+.button.slick-arrow.slick-prev {
+   display: none !important;
+}

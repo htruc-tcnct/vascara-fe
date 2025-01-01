@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
-
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 const CartContext = createContext();
 
 export const useCart = () => {
@@ -12,11 +13,50 @@ export const CartProvider = ({ children }) => {
   const [cartCount, setCartCount] = useState(
     parseInt(localStorage.getItem("cartCount") || "0", 10)
   );
+  const [isConfirmOrder, setIsConfirmOrder] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
-
+  const navigate = useNavigate();
+  const [modalMessage, setModalMessage] = useState("");
+  const { t } = useTranslation(); // Sử dụng hook `useTranslation`
+  const [orderDetails, setOrderDetails] = useState({});
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setIsConfirmOrder(false);
+  };
+  const handleOrdered = async () => {
+    setIsConfirmOrder(false);
+    try {
+      const requestBody = {
+        cartItemList: orderDetails.cartItems,
+        addressId: orderDetails.selectedAddressId,
+        isCheckOut: false,
+      };
+      console.log("Đơn hàng đã được xác nhận!");
+      console.log("Cart Items:", orderDetails.cartItems);
+      console.log("Selected Address ID:", orderDetails.selectedAddressId);
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/order/add`,
+        requestBody,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 201) {
+        setModalMessage("ĐƠn hàng tạo mới thành công");
+        setShowModal(true);
+        navigate("/thank-you");
+      } else {
+        console.error("Unexpected response:", response);
+        setModalMessage("Có lỗi xảy ra khi tạo đơn hàng, vui lòng thử lại.");
+        setShowModal(true);
+      }
+    } catch (error) {
+      console.error("Error adding order:", error);
+      alert("Lỗi khi gửi đơn hàng, vui lòng thử lại sau.");
+    }
+  };
   const fetchCartCount = async () => {
     try {
       const idUser = localStorage.getItem("idUser");
@@ -51,13 +91,13 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const addToCart = async (productId, quantity, size, display = true) => {
-    setShowModal(display);
-
     try {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Bạn chưa đăng nhập!");
+        setModalMessage(t("alerts.notLoggedIn")); // Hiển thị thông báo đăng nhập
+        setShowModal(true);
+
         return;
       }
 
@@ -82,12 +122,14 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem("cartCount", newCount);
 
         if (display) {
-          handleShowModal();
+          setModalMessage(t("notification.successAdd")); // Sử dụng key cho thông báo thành công
+          setShowModal(true);
         }
       }
     } catch (error) {
-      console.error("Lỗi khi thêm sản phẩm vào giỏ hàng:", error);
-      alert("Lỗi khi thêm sản phẩm vào giỏ hàng, vui lòng thử lại.");
+      console.error("Error adding product to cart:", error);
+      setModalMessage(t("notification.errorAdd")); // Sử dụng key cho thông báo lỗi
+      setShowModal(true);
     }
   };
 
@@ -111,10 +153,12 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem("cartCount", newCount);
       }
     } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng:", error);
-      alert("Lỗi khi xóa sản phẩm khỏi giỏ hàng, vui lòng thử lại.");
+      console.error("Error removing product from cart:", error);
+      setModalMessage(t("notification.errorDelete")); // Sử dụng key cho thông báo lỗi
+      setShowModal(true);
     }
   };
+
   const updateCart = async (cartId, quantityChange) => {
     try {
       const token = localStorage.getItem("token");
@@ -131,56 +175,60 @@ export const CartProvider = ({ children }) => {
       );
 
       if (response.status === 200) {
-        // Cập nhật cartCount dựa trên sự thay đổi thực tế về số lượng
         const newCount = cartCount + quantityChange;
         setCartCount(newCount);
         localStorage.setItem("cartCount", newCount);
       }
     } catch (err) {
-      console.error("Lỗi khi cập nhật sản phẩm trong giỏ hàng:", err);
-      alert("Lỗi khi cập nhật sản phẩm trong giỏ hàng, vui lòng thử lại.");
+      console.error("Error updating product in cart:", err);
+      setModalMessage(t("notification.errorUpdate")); // Sử dụng key cho thông báo lỗi
+      setShowModal(true);
     }
   };
-
+  const confirmOrder = (cartItems, selectedAddressId) => {
+    setModalMessage(t("notification.confirmOrder"));
+    setShowModal(true);
+    setOrderDetails({ cartItems, selectedAddressId });
+    setIsConfirmOrder(true);
+  };
   const value = {
     cartCount,
     addToCart,
     removeWithout,
     updateCart,
+    confirmOrder,
   };
 
   return (
     <CartContext.Provider value={value}>
       {children}
 
-      {/* Modal thông báo thêm thành công */}
+      {/* Modal thông báo */}
       <Modal show={showModal} onHide={handleCloseModal} centered>
-        <Modal.Header
-          closeButton
-          style={{ backgroundColor: "white", borderBottom: "none" }}
-        >
-          <Modal.Title style={{ color: "#121212" }}>Thông báo</Modal.Title>
+        <Modal.Header closeButton>
+          <Modal.Title>{t("modal.title")}</Modal.Title> {/* Tiêu đề Modal */}
         </Modal.Header>
-        <Modal.Body
-          style={{
-            backgroundColor: "white",
-            color: "#121212",
-            textAlign: "center",
-          }}
-        >
-          Sản phẩm đã được thêm vào giỏ hàng thành công!
-        </Modal.Body>
-        <Modal.Footer style={{ backgroundColor: "white", borderTop: "none" }}>
+        <Modal.Body style={{ textAlign: "center" }}>{modalMessage}</Modal.Body>
+        <Modal.Footer>
           <Button
-            style={{
-              backgroundColor: "#121212",
-              color: "white",
-              borderColor: "#121212",
-            }}
             onClick={handleCloseModal}
+            style={{
+              boder: "1px solid rgb(18, 18, 18)",
+              backgroundColor: "#dee2e6",
+              color: "#25282B",
+            }}
           >
-            Đóng
+            {t("modal.close")} {/* Nút đóng Modal */}
           </Button>
+          {isConfirmOrder && (
+            <Button
+              style={{ backgroundColor: "rgb(18, 18, 18)" }}
+              onClick={handleOrdered}
+              variant="primary"
+            >
+              {t("modal.confirm")}
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
     </CartContext.Provider>

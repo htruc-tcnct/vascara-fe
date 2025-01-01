@@ -53,6 +53,8 @@ function AddressFormModal({ show, onHide, onSubmit }) {
     } catch (error) {
       console.error("Error adding address:", error);
     }
+   window.location.reload();
+
   };
   useEffect(() => {
     fetchInfor();

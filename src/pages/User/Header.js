@@ -26,12 +26,12 @@ import {
 import { useTranslation } from "react-i18next";
 import "./style/header.css";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import LanguageSelector from "../middleware/changeLanguge";
-import { useCart } from "../context/CartContext";
-import CartModal from "../components/CartModal/CartModal";
-import { getUserIdFromToken } from "../utils/auth";
-import { useSearchBar } from "../context/searchBarContext";
+import { useAuth } from "../../context/AuthContext";
+import LanguageSelector from "../../middleware/changeLanguge";
+import { useCart } from "../../context/CartContext";
+import CartModal from "../../components/CartModal/CartModal";
+import { getUserIdFromToken } from "../../utils/auth";
+import { useSearchBar } from "../../context/searchBarContext";
 function OffCanvasExample({ show, handleClose }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -190,29 +190,31 @@ function Header({ scrollDirection }) {
     }
   }, []);
   const handleLogin = async () => {
+    const currentURL = window.location.href;
+
     try {
-      const response = await axios.post("http://localhost:8081/users/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/users/login`,
+        {
+          email,
+          password,
+        }
+      );
 
       const { token, idUser } = response.data;
 
-      // Store token and user ID in localStorage
       localStorage.setItem("idUser", idUser);
       localStorage.setItem("token", token);
 
-      // Decode the JWT to get the role
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.role;
 
-      login(token); // Update login status and save token via AuthContext
+      login(token);
 
-      // Redirect based on the user's role
       if (userRole === "admin") {
         navigate("/admin");
       } else {
-        navigate("/");
+        window.location.href = currentURL;
       }
 
       // Optional: Refresh the page (if required)

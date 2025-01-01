@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import { jwtDecode } from "jwt-decode";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -35,11 +36,18 @@ function Register() {
       const { token, idUser } = response.data;
       login(token);
       localStorage.setItem("idUser", idUser);
-      if (redirectUrl) {
-        localStorage.removeItem("redirectAfterLogin"); // Xóa URL sau khi dùng
-        navigate(redirectUrl); // Điều hướng về URL trước đó
+      const decodedToken = jwtDecode(token);
+
+      const userRole = decodedToken.role;
+      if (userRole === "admin") {
+        navigate("/admin");
       } else {
-        navigate("/"); // Nếu không có URL trước đó, về trang chủ
+        if (redirectUrl) {
+          localStorage.removeItem("redirectAfterLogin"); // Xóa URL sau khi dùng
+          navigate(redirectUrl); // Điều hướng về URL trước đó
+        } else {
+          navigate("/");
+        }
       }
       window.location.reload();
     } catch (error) {

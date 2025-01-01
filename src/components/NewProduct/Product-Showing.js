@@ -100,11 +100,6 @@ function ProductShowing({ keyword, filters, categoryId }) {
     setQuantity(value);
   };
   const handleAddToCart = () => {
-    if (!isAuthenticated) {
-      alert("chua dang nhap");
-      return;
-    }
-
     addToCart(selectedProduct.product_id, quantity, selectedSize);
     setShowModal(false);
   };
@@ -295,35 +290,23 @@ function ProductShowing({ keyword, filters, categoryId }) {
         <div
           className="col-lg-3 col-6 text-center border-end text-style"
           onClick={handleShowFilter}
+          style={{ cursor: "pointer" }}
         >
           <FontAwesomeIcon icon={faFilter} className="fa-icon" />{" "}
           {t("banner.filter")}
         </div>
         {/* Filter */}
-        <Offcanvas show={showFilter} onHide={handleCloseFilter} placement="end">
+        <Offcanvas
+          className="p-0"
+          show={showFilter}
+          onHide={handleCloseFilter}
+          placement="end"
+        >
           <Offcanvas.Header closeButton>
             <Offcanvas.Title>{t("banner.filter")}</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
             <div>
-              <h5 className="filter-section-title">{t("banner.category")}</h5>
-              <div className="filter-options">
-                {categories.map((category) => (
-                  <Button
-                    key={category.category_id}
-                    variant={
-                      selectedCategory === category.category_id
-                        ? "secondary"
-                        : "outline-secondary"
-                    }
-                    className="filter-button"
-                    onClick={() => handleCategorySelect(category.category_id)}
-                  >
-                    {i18n.language === "en" ? category.name_en : category.name}
-                  </Button>
-                ))}
-              </div>
-
               <h5 className="filter-section-title mt-4">{t("banner.price")}</h5>
               <div className="dual-range-slider">
                 <Range
@@ -408,7 +391,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
                 </Button>
               </Modal.Footer>
             </Modal>
-            <div className="d-flex justify-content-between mt-4">
+            {/* <div className="d-flex justify-content-between mt-4">
               <Button
                 variant="dark"
                 className="w-100 mb-2"
@@ -426,7 +409,7 @@ function ProductShowing({ keyword, filters, categoryId }) {
               >
                 {t("banner.clear")}
               </Button>
-            </div>
+            </div> */}
           </Offcanvas.Body>
         </Offcanvas>
 

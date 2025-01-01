@@ -7,6 +7,7 @@ import {
   Card,
   Button,
   Alert,
+  Image,
   Form,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./CheckOutComponent.css";
 import { useTranslation } from "react-i18next";
+import { useCart } from "../../context/CartContext";
 import AddressFormModal from "./AddressFormModal";
 import axios from "axios";
 function CheckOutComponent() {
@@ -29,41 +31,80 @@ function CheckOutComponent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [addressAdded, setAddressAdded] = useState(false);
+  const [addressListId, setAddressListId] = useState([]); // Danh sách địa chỉ
   const [addressList, setAddressList] = useState([]); // Danh sách địa chỉ
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-
+  const { confirmOrder } = useCart();
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
   const handleCheckout = () => {
-    console.log(selectedAddressId, " ");
+    confirmOrder(cartItems, selectedAddressId);
   };
   const handleAddressSubmit = (newAddress) => {
     setAddressList((prev) => [...prev, newAddress]); // Thêm địa chỉ mới vào danh sách
-    setSelectedAddressId(newAddress.id); // Đặt địa chỉ mới làm địa chỉ được chọn
-    setAddressAdded(true);
+    setSelectedAddressId(newAddress.address_id); // Đặt địa chỉ mới làm địa chỉ được chọn
     fetchAddresses();
   };
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8081/address/get-address",
+        `${process.env.REACT_APP_SERVER_URL}/address/get-address`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       // console.log(response.data.data.address);
-      setAddressList(response.data.data.address);
+      setAddressListId(response.data.data.address);
     } catch (error) {
       console.error("Error fetching addresses:", error);
     }
   };
-  useEffect(() => {
-    if (currentStep === 2) {
-      fetchAddresses();
+
+  const convertIdToName = async () => {
+    try {
+      const kq = await Promise.all(
+        addressListId.map(async (element) => {
+          const addressOb = {};
+
+          // Fetch province name
+          const provinceResponse = await fetch(
+            `https://provinces.open-api.vn/api/p/${element.province_code}`
+          );
+          const provinceData = await provinceResponse.json();
+          addressOb.province_name = provinceData.name;
+
+          // Fetch district name
+          const districtResponse = await fetch(
+            `https://provinces.open-api.vn/api/d/${element.district_code}`
+          );
+          const districtData = await districtResponse.json();
+          addressOb.district_name = districtData.name;
+
+          // Fetch ward name
+          const wardResponse = await fetch(
+            `https://provinces.open-api.vn/api/w/${element.ward_code}`
+          );
+          const wardData = await wardResponse.json();
+          addressOb.ward_name = wardData.name;
+          addressOb.specific_address = element.specific_address;
+          addressOb.address_id = element.address_id;
+          return addressOb;
+        })
+      );
+
+      // console.log("list: ", kq);
+      setAddressList(kq);
+    } catch (error) {
+      console.error("Error converting IDs to names:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchAddresses();
+    convertIdToName();
   }, [currentStep, showModal]);
   const handleNextStep = () => {
     setErrorMessage("");
@@ -87,7 +128,17 @@ function CheckOutComponent() {
     setErrorMessage("");
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
+  const handleAddressChange = (addressId) => {
+    setSelectedAddressId(addressId); // Cập nhật state
+    // console.log("Selected Address ID changed to:", addressId); // Ghi log
+    setAddressAdded(true);
+  };
+  const [selectedPayment, setSelectedPayment] = useState("");
 
+  const handlePaymentChange = (method) => {
+    setSelectedPayment(method);
+    console.log("Selected Payment Method:", method);
+  };
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -147,7 +198,7 @@ function CheckOutComponent() {
                     name="address"
                     value={address.address_id}
                     checked={selectedAddressId === address.address_id}
-                    onChange={() => setSelectedAddressId(address.address_id)}
+                    onChange={() => handleAddressChange(address.address_id)} // Gọi hàm xử lý
                   />
                 ))}
               </Form>
@@ -172,8 +223,66 @@ function CheckOutComponent() {
           <Card className="mb-3">
             <Card.Header>3. Thanh toán</Card.Header>
             <Card.Body>
-              <p>Chọn phương thức thanh toán</p>
-              {/* Tùy chỉnh phương thức thanh toán ở đây */}
+              <p>Chọn phương thức thanh toán:</p>
+              <Form>
+                {/* Momo */}
+                <Form.Check
+                  type="radio"
+                  id="payment-momo"
+                  name="payment-method"
+                  label={
+                    <div className="d-flex align-items-center">
+                      <Image
+                        src="https://play-lh.googleusercontent.com/uCtnppeJ9ENYdJaSL5av-ZL1ZM1f3b35u9k8EOEjK3ZdyG509_2osbXGH5qzXVmoFv0=w240-h480-rw"
+                        alt="Momo Logo"
+                        style={{
+                          objectFit: "contain",
+                          width: "50px",
+                          height: "50px",
+                        }}
+                        className="me-2"
+                      />
+                      <span style={{ fontSize: "0.9rem" }}>
+                        Momo (ví điện tử)
+                      </span>
+                    </div>
+                  }
+                  value="Momo"
+                  checked={selectedPayment === "Momo"}
+                  onChange={() => handlePaymentChange("Momo")}
+                />
+
+                {/* Tiền mặt */}
+                <Form.Check
+                  type="radio"
+                  id="payment-cash"
+                  name="payment-method"
+                  className="mt-5"
+                  label={
+                    <div className="d-flex align-items-center">
+                      <Image
+                        src="https://freepnglogo.com/images/all_img/1725386814cash-app-logo.png"
+                        alt="Cash Icon"
+                        style={{
+                          objectFit: "contain",
+                          width: "50px",
+                          height: "50px",
+                        }}
+                        className="me-2"
+                      />
+                      <span style={{ fontSize: "0.9rem" }}>
+                        Tiền mặt (Thanh toán khi nhận hàng)
+                      </span>
+                    </div>
+                  }
+                  value="Cash"
+                  checked={selectedPayment === "Cash"}
+                  onChange={() => handlePaymentChange("Cash")}
+                />
+              </Form>
+              <p className="mt-3">
+                Phương thức đã chọn: <b>{selectedPayment || "Chưa chọn"}</b>
+              </p>
             </Card.Body>
           </Card>
         );
@@ -212,6 +321,7 @@ function CheckOutComponent() {
 
           {/* Nút điều hướng */}
           <div className="d-flex justify-content-between mt-3">
+            {/* Nút quay lại */}
             {currentStep === 1 ? (
               <Button variant="secondary" onClick={() => navigate("/")}>
                 Trở về trang chủ
@@ -221,14 +331,22 @@ function CheckOutComponent() {
                 Quay lại
               </Button>
             )}
+
+            {/* Nút tiếp tục hoặc hoàn tất */}
             {currentStep < 3 ? (
               <Button variant="dark" onClick={handleNextStep}>
                 Tiếp tục
               </Button>
-            ) : (
+            ) : selectedPayment === "Cash" ? (
               <Button variant="success" onClick={handleCheckout}>
-                Hoàn tất thanh toán
+                Đặt hàng
               </Button>
+            ) : selectedPayment === "Momo" ? (
+              <Button variant="primary" onClick={handleCheckout}>
+                Tiến hành thanh toán
+              </Button>
+            ) : (
+              <p>Vui lòng chọn phương thức thanh toán</p>
             )}
           </div>
         </Col>

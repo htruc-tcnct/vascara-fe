@@ -182,7 +182,8 @@ function ProductDetail() {
     infinite: true, // Cho phép quay lại đầu sau khi đến cuối
     speed: 500, // Thời gian chuyển slide (ms)
     slidesToShow: 4, // Mặc định số sản phẩm hiển thị
-    slidesToScroll: 1, // Số sản phẩm sẽ chuyển mỗi lần
+    slidesToScroll: 1, // Số sản phẩm sẽ chuyển mỗi lần  arrows: false,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024, // Khi màn hình có độ rộng 1024px trở lên
@@ -420,6 +421,7 @@ function ProductDetail() {
           </Slider>
         </div>
       </div>
+
       <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Body>
           {selectedProduct && (
@@ -427,14 +429,13 @@ function ProductDetail() {
               <div className="col-6">
                 {selectedProduct.product_images &&
                 selectedProduct.product_images.length > 0 ? (
-                  <Carousel>
+                  <Carousel controls={false}>
                     {selectedProduct.product_images.map((image, index) => (
                       <Carousel.Item key={image.image_id}>
                         <Image
                           src={image.image_url}
                           alt={`Slide ${image.image_id}`}
                           className="d-block w-100 modal-product-image"
-                          loading="lazy" // Enables lazy loading
                         />
                       </Carousel.Item>
                     ))}
@@ -446,8 +447,7 @@ function ProductDetail() {
                       "https://via.placeholder.com/150"
                     }
                     alt={selectedProduct.currentTranslation?.name}
-                    className="d-block w-100 modal-product-image "
-                    loading="lazy"
+                    className="d-block w-100 modal-product-image"
                   />
                 )}
               </div>
@@ -504,6 +504,7 @@ function ProductDetail() {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Button
         variant="primary"
         className="btn-custom btn-lg mx-auto d-block text-center rounded-1"

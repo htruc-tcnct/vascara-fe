@@ -91,27 +91,27 @@ function EditProfileComponent() {
 
       // Parse address if it's a valid JSON string
       const addressFull = userData.address[0];
-      console.log("FULL: ", addressFull);
-      setSelectedProvince(addressFull.province);
-      setSelectedDistrict(addressFull.district);
-      setSelectedWards(addressFull.ward);
+
+      setSelectedProvince(addressFull.province_code);
+      setSelectedDistrict(addressFull.district_code);
+      setSelectedWards(addressFull.ward_code);
       setDetailAddress(addressFull.specific_address);
       // Fetch and set the names based on the user's address
-      fetch(`https://provinces.open-api.vn/api/p/${addressFull.province}`)
+      fetch(`https://provinces.open-api.vn/api/p/${addressFull.province_code}`)
         .then((response) => response.json())
         .then((data) => setProvinceName(data.name))
         .catch((error) =>
           console.error("Error fetching province name:", error)
         );
 
-      fetch(`https://provinces.open-api.vn/api/d/${addressFull.district}`)
+      fetch(`https://provinces.open-api.vn/api/d/${addressFull.district_code}`)
         .then((response) => response.json())
         .then((data) => setDistrictName(data.name))
         .catch((error) =>
           console.error("Error fetching district name:", error)
         );
 
-      fetch(`https://provinces.open-api.vn/api/w/${addressFull.ward}`)
+      fetch(`https://provinces.open-api.vn/api/w/${addressFull.ward_code}`)
         .then((response) => response.json())
         .then((data) => setWardName(data.name))
         .catch((error) => console.error("Error fetching ward name:", error));

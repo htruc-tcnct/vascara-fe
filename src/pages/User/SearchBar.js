@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import debounce from "lodash/debounce";
-import { useSearchBar } from "../context/searchBarContext";
+import { useSearchBar } from "../../context/searchBarContext";
 import "./style/searchBar.css";
-import s1 from "../assets/s1.jpg";
-import s2 from "../assets/s2.jpg";
-import s3 from "../assets/s3.jpg";
-import s4 from "../assets/s4.jpg";
+import s1 from "../../assets/s1.jpg";
+import s2 from "../../assets/s2.jpg";
+import s3 from "../../assets/s3.jpg";
+import s4 from "../../assets/s4.jpg";
 
 const SearchBar = () => {
   const { isOffCanvasOpen, closeSearchBar } = useSearchBar();

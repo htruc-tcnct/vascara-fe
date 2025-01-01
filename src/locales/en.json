@@ -55,7 +55,7 @@
   "sort":"Sort",
   "products_number": "products",
   "add_to_card": "Add to cart",
-  "deatail_product": "Detail",
+  "deatail_product": "Exit",
   "quick-view":"Quick View",
   "category": "Category",
     "price": "Price",
@@ -162,6 +162,24 @@
   "slogans": "Accompanying fashion lovers"
 
 
-}
+},
+
+  "notification": {
+    "successAdd": "Product has been added to the cart successfully!",
+    "errorAdd": "Failed to add product to the cart. Please try again.",
+    "errorDelete": "Failed to remove product from the cart. Please try again.",
+    "errorUpdate": "Failed to update product in the cart. Please try again.",
+    "confirmOrder": "Do you want to confirm your order? Please check your order details."
+  },
+  "modal": {
+    "title": "Notification",
+    "close": "Close",
+    "confirm": "Confirm"
+  },
+  "alerts": {
+    "notLoggedIn": "You are not logged in!"
+  }
+
+
 
 }

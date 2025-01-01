@@ -54,7 +54,7 @@
   "sort":"Sắp xếp",
   "products_number": "sản phẩm",  
   "add_to_card": "Thêm vào giỏ hàng",
-  "deatail_product": "Xem chi tiết",
+  "deatail_product": "Thoát",
   "quick-view": "Xem nhanh",
   "category":"Danh mục",
   "price": "Giá bán",
@@ -159,5 +159,20 @@
     "wallet-collections":"Bộ sưu tập ví",
     "go-to-see":"Xem toàn bộ",
     "slogans":"Đồng hành cùng người yêu thời trang"
+  },
+    "notification": {
+    "successAdd": "Sản phẩm đã được thêm vào giỏ hàng thành công!",
+    "errorAdd": "Lỗi khi thêm sản phẩm vào giỏ hàng, vui lòng thử lại.",
+    "errorDelete": "Lỗi khi xóa sản phẩm khỏi giỏ hàng, vui lòng thử lại.",
+    "errorUpdate": "Lỗi khi cập nhật sản phẩm trong giỏ hàng, vui lòng thử lại.",
+     "confirmOrder": "Bạn có muốn xác nhận đặt đơn hàng? Vui lòng kiểm tra đơn đặt chi tiết. "
+  },
+  "modal": {
+    "title": "Thông báo",
+    "close": "Đóng",
+     "confirm": "Xác nhận"
+  },
+  "alerts": {
+    "notLoggedIn": "Bạn chưa đăng nhập!"
   }
 }
