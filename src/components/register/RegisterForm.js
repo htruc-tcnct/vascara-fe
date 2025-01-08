@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faCheckCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 function RegisterForm({
   email,
@@ -11,6 +15,7 @@ function RegisterForm({
   setName,
   handleRegister,
   t,
+  error,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,13 +23,37 @@ function RegisterForm({
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+  const criteria = [
+    { id: "lowercase", text: "At least one lowercase letter", regex: /[a-z]/ },
+    { id: "uppercase", text: "At least one uppercase letter", regex: /[A-Z]/ },
+    { id: "number", text: "At least one number", regex: /\d/ },
+    {
+      id: "special",
+      text: "At least one special character",
+      regex: /[@$!%*?&]/,
+    },
+    { id: "length", text: "At least 8 characters", regex: /^.{8,}$/ },
+  ];
+
+  const getCriterionStatus = (criterion) => criterion.regex.test(password);
+
+  const allCriteriaMet = criteria.every((criterion) =>
+    getCriterionStatus(criterion)
+  );
+
   const handleSubmit = () => {
-    if (password !== confirmPassword) {
-      setErrorMessage(t("login.password_mismatch")); // Dùng t() nếu có bản dịch
-    } else {
-      setErrorMessage("");
-      handleRegister();
+    if (!allCriteriaMet) {
+      setErrorMessage(t("login.password_requirements"));
+      return;
     }
+
+    if (password !== confirmPassword) {
+      setErrorMessage(t("login.password_mismatch")); // Use translations if available
+      return;
+    }
+
+    setErrorMessage("");
+    handleRegister();
   };
 
   return (
@@ -37,7 +66,7 @@ function RegisterForm({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         type="text"
-        placeholder="Vd: abc@ex.com"
+        placeholder="e.g., abc@ex.com"
       />
 
       <label>{t("login.name_user")}</label>
@@ -45,7 +74,7 @@ function RegisterForm({
         value={name}
         onChange={(e) => setName(e.target.value)}
         type="text"
-        placeholder="Vd: Nguyễn Văn A"
+        placeholder="e.g., John Doe"
       />
 
       <label>{t("login.password")}</label>
@@ -64,6 +93,38 @@ function RegisterForm({
         />
       </div>
 
+      {/* Password Criteria Display */}
+      <div className="password-criteria d-flex">
+        {criteria.map((criterion) => (
+          <div
+            key={criterion.id}
+            className={`criterion ${
+              getCriterionStatus(criterion) ? "met" : ""
+            }`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "10px",
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              style={{
+                marginRight: "5px",
+                color: getCriterionStatus(criterion) ? "green" : "lightgray",
+              }}
+            />
+            <span
+              style={{
+                color: getCriterionStatus(criterion) ? "green" : "lightgray",
+              }}
+            >
+              {criterion.text}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <label>{t("login.confirm_password")}</label>
       <div className="password-field">
         <input
@@ -75,8 +136,20 @@ function RegisterForm({
       </div>
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {error && (
+        <div className="error-message text-center text-danger">{error}</div>
+      )}
 
-      <button onClick={handleSubmit} className="form-button">
+      {/* Disabled Register Button if Criteria Not Met */}
+      <button
+        onClick={handleSubmit}
+        className="form-button"
+        disabled={!allCriteriaMet}
+        style={{
+          backgroundColor: allCriteriaMet ? "" : "#ccc",
+          cursor: allCriteriaMet ? "pointer" : "not-allowed",
+        }}
+      >
         {t("login.sign_up")}
       </button>
     </div>

@@ -80,7 +80,23 @@
 .forgot-password:hover {
     text-decoration: underline;
 }
+.password-field {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
 
+.password-input {
+    flex: 1;
+    padding-right: 30px;
+    /* Add some padding to the right to make space for the icon */
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 29px;
+}
 .form-button {
     width: 100%;
     padding: 12px;
@@ -132,4 +148,37 @@
 }
 .terms p a:hover {
     text-decoration: none;
+}
+
+.password-criteria {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #777;
+}
+
+.criterion {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.criterion .check-icon {
+    margin-right: 10px;
+    color: lightgray;
+    /* Default color for unmet criteria */
+}
+
+.criterion span {
+    color: lightgray;
+    /* Default text color for unmet criteria */
+}
+
+.criterion.met .check-icon {
+    color: green;
+    /* Color for met criteria */
+}
+
+.criterion.met span {
+    color: green;
+    /* Text color for met criteria */
 }

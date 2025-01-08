@@ -76,7 +76,7 @@ function AccountInfoComponent() {
                 <strong>{t("profile.my-profile")}</strong>
               </ListGroup.Item>
 
-              <ListGroup.Item className="responsive-text">
+              {/* <ListGroup.Item className="responsive-text">
                 <a
                   href="#"
                   onClick={() => handleLinkClick("purchase-history")}
@@ -92,7 +92,7 @@ function AccountInfoComponent() {
                   icon={faChevronRight}
                   style={{ float: "right" }}
                 />
-              </ListGroup.Item>
+              </ListGroup.Item> */}
 
               <ListGroup.Item className="responsive-text">
                 <a

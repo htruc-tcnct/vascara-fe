@@ -22,6 +22,7 @@ import EditProfileComponent from "../components/Account/EditProfileComponent";
 import Banner from "../components/NewProduct/Banner";
 import ProtectedRoute from "../context/ProtectedRoute";
 import ThankYouPage from "../components/CartModal/ThankYou";
+import OrderHistory from "../components/Orders/OrderHistory";
 
 const UserRoutes = ({ scrollDirection }) => {
   const location = useLocation();
@@ -41,6 +42,7 @@ const UserRoutes = ({ scrollDirection }) => {
           <Route path="/cart" element={<CartComponent />} />
           <Route path="/cart/checkout" element={<CheckOutComponent />} />
           <Route path="/thank-you" element={<ThankYouPage />} />
+          <Route path="/order-history" element={<OrderHistory />} />
           <Route
             path="/account-info"
             element={

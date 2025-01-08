@@ -53,8 +53,7 @@ function AddressFormModal({ show, onHide, onSubmit }) {
     } catch (error) {
       console.error("Error adding address:", error);
     }
-   window.location.reload();
-
+    // window.location.reload();
   };
   useEffect(() => {
     fetchInfor();
@@ -65,9 +64,10 @@ function AddressFormModal({ show, onHide, onSubmit }) {
     const fetchProvinces = async () => {
       try {
         const response = await axios.get(
-          "https://provinces.open-api.vn/api/p/"
+          `${process.env.REACT_APP_API_MAP_VN}/p`
         );
         setProvinces(response.data);
+        // console.log("province: ", response.data);
       } catch (error) {
         console.error("Lỗi khi fetch tỉnh/thành phố:", error);
       }
@@ -80,11 +80,14 @@ function AddressFormModal({ show, onHide, onSubmit }) {
     if (address.province) {
       const fetchDistricts = async () => {
         try {
+          console.log("province: ", address);
           const response = await axios.get(
-            `https://provinces.open-api.vn/api/p/${address.province}?depth=2`
+            `${process.env.REACT_APP_API_MAP_VN}/d/province/${address.province}`
           );
-          setDistricts(response.data.districts || []);
-          setWards([]); // Reset Phường/Xã khi Tỉnh/Thành phố thay đổi
+          // console.log("response: ", response.data);
+          setDistricts(response.data || []);
+          setWards([]);
+          // console.log("districts: ", districts);
         } catch (error) {
           console.error("Lỗi khi fetch quận/huyện:", error);
         }
@@ -99,9 +102,10 @@ function AddressFormModal({ show, onHide, onSubmit }) {
       const fetchWards = async () => {
         try {
           const response = await axios.get(
-            `https://provinces.open-api.vn/api/d/${address.district}?depth=2`
+            `${process.env.REACT_APP_API_MAP_VN}/w/district/${address.district}`
           );
-          setWards(response.data.wards || []);
+          console.log("wards: ", response.data);
+          setWards(response.data || []);
         } catch (error) {
           console.error("Lỗi khi fetch phường/xã:", error);
         }

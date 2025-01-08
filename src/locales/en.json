@@ -140,8 +140,9 @@
   "pick-distict": "Select District",
   "ward": "Ward/Commune: ",
   "pick-ward": "Select Ward/Commune",
-  "address": "Detailed Address: "
-
+  "address": "Detailed Address: ",
+  "update-success": "Update information successfully",
+  "update-error": "Update failed! Please try again."
   },
    "detail-product": {
     "buy-now": "Buy Now",
@@ -178,6 +179,25 @@
   },
   "alerts": {
     "notLoggedIn": "You are not logged in!"
+  },
+  "orderHistory": {
+    "title": "Order History",
+    "columns": {
+      "number": "#",
+      "totalPrice": "Total Price",
+      "status": "Status",
+      "orderDate": "Order Date",
+      "actions": "Actions"
+    },
+    "viewDetails": "View Details",
+    "modal": {
+      "title": "Order Details",
+      "orderDate": "Order Date",
+      "items": "Items",
+      "totalPrice": "Total Price",
+      "status": "Status",
+      "close": "Close"
+    }
   }
 
 

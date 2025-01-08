@@ -46,6 +46,8 @@ export const CartProvider = ({ children }) => {
       if (response.status === 201) {
         setModalMessage("ĐƠn hàng tạo mới thành công");
         setShowModal(true);
+        localStorage.removeItem("checkoutCurrentStep");
+
         navigate("/thank-you");
       } else {
         console.error("Unexpected response:", response);
@@ -185,11 +187,21 @@ export const CartProvider = ({ children }) => {
       setShowModal(true);
     }
   };
+  const updateInfor = async (success, fail) => {
+    if (success) {
+      setModalMessage(t("profile.update-success"));
+    }
+    if (fail) {
+      setModalMessage(t("profile.update-error"));
+    }
+    setShowModal(true);
+  };
   const confirmOrder = (cartItems, selectedAddressId) => {
     setModalMessage(t("notification.confirmOrder"));
     setShowModal(true);
     setOrderDetails({ cartItems, selectedAddressId });
     setIsConfirmOrder(true);
+    localStorage.removeItem("checkoutCurrentStep");
   };
   const value = {
     cartCount,
@@ -197,6 +209,7 @@ export const CartProvider = ({ children }) => {
     removeWithout,
     updateCart,
     confirmOrder,
+    updateInfor,
   };
 
   return (

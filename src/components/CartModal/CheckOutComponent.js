@@ -31,7 +31,6 @@ function CheckOutComponent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [addressAdded, setAddressAdded] = useState(false);
-  const [addressListId, setAddressListId] = useState([]); // Danh sách địa chỉ
   const [addressList, setAddressList] = useState([]); // Danh sách địa chỉ
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const { confirmOrder } = useCart();
@@ -39,7 +38,26 @@ function CheckOutComponent() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    // confirmOrder(cartItems, selectedAddressId);
+    const response = await axios.post(
+      `${process.env.REACT_APP_SERVER_URL}/order/checkout`,
+      {
+        totalPrice,
+        cartItemList: cartItems,
+        addressId: selectedAddressId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    localStorage.removeItem("checkoutCurrentStep");
+    console.log("response: ", response.data);
+    window.location.href = response.data.payUrl;
+  };
+  const handleOrdered = () => {
     confirmOrder(cartItems, selectedAddressId);
   };
   const handleAddressSubmit = (newAddress) => {
@@ -56,55 +74,19 @@ function CheckOutComponent() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // console.log(response.data.data.address);
-      setAddressListId(response.data.data.address);
+      // console.log(">>>>>>>>>>>>>>>>>>: ", response.data.data.address);
+      setAddressList(response.data.data.address);
     } catch (error) {
       console.error("Error fetching addresses:", error);
     }
   };
 
-  const convertIdToName = async () => {
-    try {
-      const kq = await Promise.all(
-        addressListId.map(async (element) => {
-          const addressOb = {};
-
-          // Fetch province name
-          const provinceResponse = await fetch(
-            `https://provinces.open-api.vn/api/p/${element.province_code}`
-          );
-          const provinceData = await provinceResponse.json();
-          addressOb.province_name = provinceData.name;
-
-          // Fetch district name
-          const districtResponse = await fetch(
-            `https://provinces.open-api.vn/api/d/${element.district_code}`
-          );
-          const districtData = await districtResponse.json();
-          addressOb.district_name = districtData.name;
-
-          // Fetch ward name
-          const wardResponse = await fetch(
-            `https://provinces.open-api.vn/api/w/${element.ward_code}`
-          );
-          const wardData = await wardResponse.json();
-          addressOb.ward_name = wardData.name;
-          addressOb.specific_address = element.specific_address;
-          addressOb.address_id = element.address_id;
-          return addressOb;
-        })
-      );
-
-      // console.log("list: ", kq);
-      setAddressList(kq);
-    } catch (error) {
-      console.error("Error converting IDs to names:", error);
-    }
-  };
-
   useEffect(() => {
     fetchAddresses();
-    convertIdToName();
+    const savedStep = localStorage.getItem("checkoutCurrentStep");
+    if (savedStep) {
+      setCurrentStep(parseInt(savedStep, 10)); // Khôi phục bước từ localStorage
+    }
   }, [currentStep, showModal]);
   const handleNextStep = () => {
     setErrorMessage("");
@@ -121,13 +103,19 @@ function CheckOutComponent() {
       return;
     }
 
-    setCurrentStep((prev) => Math.min(prev + 1, 3));
+    const nextStep = Math.min(currentStep + 1, 3);
+    setCurrentStep(nextStep);
+    localStorage.setItem("checkoutCurrentStep", nextStep); // Lưu bước hiện tại vào localStorage
   };
 
   const handlePreviousStep = () => {
     setErrorMessage("");
-    setCurrentStep((prev) => Math.max(prev - 1, 1));
+
+    const prevStep = Math.max(currentStep - 1, 1);
+    setCurrentStep(prevStep);
+    localStorage.setItem("checkoutCurrentStep", prevStep); // Lưu bước hiện tại vào localStorage
   };
+
   const handleAddressChange = (addressId) => {
     setSelectedAddressId(addressId); // Cập nhật state
     // console.log("Selected Address ID changed to:", addressId); // Ghi log
@@ -331,14 +319,13 @@ function CheckOutComponent() {
                 Quay lại
               </Button>
             )}
-
             {/* Nút tiếp tục hoặc hoàn tất */}
             {currentStep < 3 ? (
               <Button variant="dark" onClick={handleNextStep}>
                 Tiếp tục
               </Button>
             ) : selectedPayment === "Cash" ? (
-              <Button variant="success" onClick={handleCheckout}>
+              <Button variant="success" onClick={handleOrdered}>
                 Đặt hàng
               </Button>
             ) : selectedPayment === "Momo" ? (

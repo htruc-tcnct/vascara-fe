@@ -3,78 +3,18 @@ import { Container, Form, Button } from "react-bootstrap";
 import "./styles.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { useUserInfo } from "../../context/UserInfoContext";
+import { useCart } from "../../context/CartContext";
 function EditProfileComponent() {
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-  const [provinceName, setProvinceName] = useState("");
-  const [districtName, setDistrictName] = useState("");
-  const [wardName, setWardName] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedWards, setSelectedWards] = useState("");
   const [userInfo, setUserInfo] = useState({});
   const [phoneError, setPhoneError] = useState("");
   const UserId = localStorage.getItem("idUser");
   const token = localStorage.getItem("token");
-  const [detailAddress, setDetailAddress] = useState("");
-
+  const { updateInfor } = useCart();
   const { t } = useTranslation();
-  // Function to safely parse JSON
-  const safeParseJSON = (jsonString) => {
-    try {
-      return JSON.parse(jsonString);
-    } catch (error) {
-      console.error("Error parsing JSON:", error);
-      return {};
-    }
-  };
 
   // Fetch all provinces initially
-  useEffect(() => {
-    fetch("https://provinces.open-api.vn/api/p/")
-      .then((response) => response.json())
-      .then((data) => setProvinces(data))
-      .catch((error) => console.error("Error fetching provinces:", error));
-  }, []);
 
-  // Fetch districts and province name when a province is selected
-  useEffect(() => {
-    if (selectedProvince) {
-      fetch(`https://provinces.open-api.vn/api/p/${selectedProvince}?depth=2`)
-        .then((response) => response.json())
-        .then((data) => {
-          setDistricts(data.districts || []);
-          setProvinceName(data.name);
-        })
-        .catch((error) => console.error("Error fetching districts:", error));
-    }
-  }, [selectedProvince]);
-
-  // Fetch wards and district name when a district is selected
-  useEffect(() => {
-    if (selectedDistrict) {
-      fetch(`https://provinces.open-api.vn/api/d/${selectedDistrict}?depth=2`)
-        .then((response) => response.json())
-        .then((data) => {
-          setWards(data.wards || []);
-          setDistrictName(data.name);
-        })
-        .catch((error) => console.error("Error fetching wards:", error));
-    }
-  }, [selectedDistrict]);
-
-  // Fetch ward name when a ward is selected
-  useEffect(() => {
-    if (selectedWards) {
-      fetch(`https://provinces.open-api.vn/api/w/${selectedWards}`)
-        .then((response) => response.json())
-        .then((data) => setWardName(data.name))
-        .catch((error) => console.error("Error fetching ward name:", error));
-    }
-  }, [selectedWards]);
-
+  // Fetch user info and set initial state
   const getUserInfo = async () => {
     try {
       const result = await axios.get(
@@ -89,32 +29,7 @@ function EditProfileComponent() {
       const userData = result.data.user;
       setUserInfo(userData);
 
-      // Parse address if it's a valid JSON string
-      const addressFull = userData.address[0];
-
-      setSelectedProvince(addressFull.province_code);
-      setSelectedDistrict(addressFull.district_code);
-      setSelectedWards(addressFull.ward_code);
-      setDetailAddress(addressFull.specific_address);
-      // Fetch and set the names based on the user's address
-      fetch(`https://provinces.open-api.vn/api/p/${addressFull.province_code}`)
-        .then((response) => response.json())
-        .then((data) => setProvinceName(data.name))
-        .catch((error) =>
-          console.error("Error fetching province name:", error)
-        );
-
-      fetch(`https://provinces.open-api.vn/api/d/${addressFull.district_code}`)
-        .then((response) => response.json())
-        .then((data) => setDistrictName(data.name))
-        .catch((error) =>
-          console.error("Error fetching district name:", error)
-        );
-
-      fetch(`https://provinces.open-api.vn/api/w/${addressFull.ward_code}`)
-        .then((response) => response.json())
-        .then((data) => setWardName(data.name))
-        .catch((error) => console.error("Error fetching ward name:", error));
+      const addressFull = userData.address?.[0];
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -124,30 +39,34 @@ function EditProfileComponent() {
     getUserInfo();
   }, []);
 
+  // Handle input changes for text fields
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
+  // Validate phone number format
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^0\d{9}$/;
     return phoneRegex.test(phone);
   };
 
+  // Handle phone number changes
   const handlePhoneChange = (e) => {
     const { value } = e.target;
     setUserInfo({ ...userInfo, phonenumber: value });
 
     if (!validatePhoneNumber(value)) {
-      setPhoneError("Số điện thoại không hợp lệ. Vui lòng nhập lại.");
+      setPhoneError(t("profile.invalid-phone"));
     } else {
       setPhoneError("");
     }
   };
 
+  // Update user information
   const updateInfo = async () => {
-    if (!validatePhoneNumber(userInfo.phonenumber)) {
-      setPhoneError("Số điện thoại không hợp lệ. Vui lòng nhập lại.");
+    if (phoneError || !validatePhoneNumber(userInfo.phonenumber)) {
+      setPhoneError(t("profile.invalid-phone"));
       return;
     }
 
@@ -156,10 +75,6 @@ function EditProfileComponent() {
         `${process.env.REACT_APP_SERVER_URL}/users/update/${UserId}`,
         {
           ...userInfo,
-          provinceCode: selectedProvince,
-          districtCode: selectedDistrict,
-          wardCode: selectedWards,
-          addressDetail: detailAddress,
         },
         {
           headers: {
@@ -168,11 +83,10 @@ function EditProfileComponent() {
         }
       );
 
-      console.log("Cập nhật thành công:", response.data);
-      alert("Thông tin cập nhật thành công");
+      updateInfor(true, false);
     } catch (error) {
       console.error("Error updating user info:", error);
-      alert("Đã xảy ra lỗi trong quá trình cập nhật. Vui lòng thử lại.");
+      updateInfor(false, true);
     }
   };
 
@@ -223,76 +137,6 @@ function EditProfileComponent() {
             placeholder="Chọn ngày sinh"
             value={userInfo.birthday || ""}
             onChange={handleInputChange}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3 responsive-text" controlId="formCity">
-          <Form.Label>{t("profile.province")}</Form.Label>
-          <Form.Select
-            value={selectedProvince}
-            onChange={(e) => {
-              const newProvinceCode = e.target.value;
-              setSelectedProvince(newProvinceCode);
-              setSelectedDistrict("");
-              setSelectedWards("");
-              setDistricts([]);
-              setWards([]);
-            }}
-          >
-            <option>{t("profile.pick-province")}</option>
-            {provinces.map((province) => (
-              <option key={province.code} value={province.code}>
-                {province.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group className="mb-3 responsive-text" controlId="formDistrict">
-          <Form.Label>{t("profile.distict")}</Form.Label>
-          <Form.Select
-            value={selectedDistrict}
-            onChange={(e) => {
-              const newDistrictCode = e.target.value;
-              setSelectedDistrict(newDistrictCode);
-              setSelectedWards("");
-              setWards([]);
-            }}
-            disabled={!selectedProvince}
-          >
-            <option>{t("profile.pick-distict")}</option>
-            {districts.map((district) => (
-              <option key={district.code} value={district.code}>
-                {district.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group className="mb-3 responsive-text" controlId="formWard">
-          <Form.Label>{t("profile.ward")}</Form.Label>
-          <Form.Select
-            value={selectedWards}
-            onChange={(e) => setSelectedWards(e.target.value)}
-            disabled={!selectedDistrict}
-          >
-            <option>{t("profile.pick-ward")}</option>
-            {wards.map((ward) => (
-              <option key={ward.code} value={ward.code}>
-                {ward.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group className="mb-3 responsive-text" controlId="formAddress">
-          <Form.Label>{t("profile.address")}</Form.Label>
-          <Form.Control
-            type="text"
-            name="address"
-            placeholder="VD: 96 Cao Thắng"
-            value={detailAddress}
-            onChange={(e) => setDetailAddress(e.target.value)}
           />
         </Form.Group>
 

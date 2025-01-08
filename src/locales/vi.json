@@ -138,8 +138,9 @@
    "pick-distict":"Chọn quận/ huyện",
   "ward":"Phường/ Xã: ",
    "pick-ward":"Chọn phường/ xã",
-   "address":"Địa chỉ cụ thể: "
-  
+   "address":"Địa chỉ cụ thể: ",
+   "update-success":"Cập nhật thông tin thành công",
+   "update-error": "Cập nhật thông tin thất bại"
   },
 
     "detail-product":{
@@ -174,5 +175,24 @@
   },
   "alerts": {
     "notLoggedIn": "Bạn chưa đăng nhập!"
+  },
+    "orderHistory": {
+    "title": "Lịch Sử Đơn Hàng",
+    "columns": {
+      "number": "#",
+      "totalPrice": "Tổng Giá",
+      "status": "Trạng Thái",
+      "orderDate": "Ngày Đặt",
+      "actions": "Hành Động"
+    },
+    "viewDetails": "Xem Chi Tiết",
+    "modal": {
+      "title": "Chi Tiết Đơn Hàng",
+      "orderDate": "Ngày Đặt",
+      "items": "Sản Phẩm",
+      "totalPrice": "Tổng Giá",
+      "status": "Trạng Thái",
+      "close": "Đóng"
+    }
   }
 }

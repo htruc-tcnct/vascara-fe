@@ -1,0 +1,80 @@
+/* General Background and Text Colors */
+body {
+    background-color: #ffffff;
+    /* White background */
+    color: #495057;
+    /* Text color */
+}
+
+/* Table Styles */
+table {
+    border-color: #495057;
+}
+
+thead {
+    background-color: #495057;
+    /* Darker header background */
+    color: #ffffff;
+    /* White text */
+}
+
+tbody tr:hover {
+    background-color: #f8f9fa;
+    /* Light gray hover for table rows */
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #495057;
+    border-color: #495057;
+}
+
+.btn-primary:hover {
+    background-color: #343a40;
+    /* Darker on hover */
+    border-color: #343a40;
+}
+
+.btn-secondary {
+    background-color: #f8f9fa;
+    border-color: #495057;
+    color: #495057;
+}
+
+.btn-secondary:hover {
+    background-color: #e9ecef;
+    border-color: #343a40;
+    color: #343a40;
+}
+
+/* Modal Header and Footer */
+.modal-header {
+    background-color: #495057;
+    color: #ffffff;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    /* Light footer background */
+}
+
+/* Carousel Control Colors */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #495057;
+    /* Dark background for visibility */
+    border-radius: 50%;
+    /* Rounded control */
+}
+
+.carousel-item {
+    background-color: #ffffff;
+    /* White slide background */
+    color: #495057;
+    /* Text color */
+}
+
+/* Center Text */
+.text-center {
+    text-align: center;
+}

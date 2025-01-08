@@ -54,16 +54,14 @@ function Register() {
       setError("Invalid email or password");
     }
   }, [email, password, login, navigate]);
-
   const handleRegister = useCallback(async () => {
-    if (!email && !password) {
-      setError("Please provide either an email or phone number and password.");
+    if (!email || !password) {
+      setError("Please provide an email and password.");
       return;
     }
-
     try {
       const response = await axios.post(
-        "http://localhost:8081/users/register",
+        `${process.env.REACT_APP_SERVER_URL}/users/register`,
         {
           email,
           password,
@@ -75,7 +73,18 @@ function Register() {
       alert("Register successful!");
       navigate("/login-success");
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      // Check if error response exists and contains a message
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message); // Display the server's error message
+      } else {
+        setError("Registration failed. Please try again."); // Fallback error message
+      }
+      console.error("Registration failed:", error.response || error);
+      alert("Register failed!");
     }
   }, [email, password, name, login, navigate]);
 
@@ -116,6 +125,7 @@ function Register() {
             setName={setName}
             handleRegister={handleRegister}
             t={t}
+            error={error}
           />
         )}
       </div>
