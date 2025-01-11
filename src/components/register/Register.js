@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { jwtDecode } from "jwt-decode";
-
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +17,7 @@ function Register() {
 
   const [activeTab, setActiveTab] = useState("login");
   const { t } = useTranslation();
-
+  const {errorMessage, setErrorMessage} = useState("")
   const changeToRegister = () => {
     setActiveTab("register");
   };
@@ -33,6 +32,9 @@ function Register() {
           password,
         }
       );
+      console.log("Response received: ", response); // Log the entire response
+      console.log("Response data: ", response.data); // Log the response data
+
       const { token, idUser } = response.data;
       login(token);
       localStorage.setItem("idUser", idUser);
@@ -51,9 +53,11 @@ function Register() {
       }
       window.location.reload();
     } catch (error) {
+      console.error("Login error: ", error.response.data.message); // Log the error
       setError("Invalid email or password");
     }
   }, [email, password, login, navigate]);
+
   const handleRegister = useCallback(async () => {
     if (!email || !password) {
       setError("Please provide an email and password.");
@@ -113,6 +117,8 @@ function Register() {
             password={password}
             setPassword={setPassword}
             handleLogin={handleLogin}
+            error={error}
+
             t={t}
           />
         ) : (

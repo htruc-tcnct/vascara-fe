@@ -194,5 +194,30 @@
       "status": "Trạng Thái",
       "close": "Đóng"
     }
+  },
+  "checkout": {
+    "loginMessage": "Bạn đã đăng nhập bằng tài khoản",
+    "loginPrompt": "Vui lòng đăng nhập để tiếp tục thanh toán.",
+    "loginButton": "Đăng nhập ngay",
+    "addressHeader": "Địa chỉ",
+    "addressInfo": "Thông tin người nhận hàng",
+    "addAddressButton": "Thêm thông tin người nhận hàng",
+    "paymentHeader": "Thanh toán",
+    "paymentMethod": "Chọn phương thức thanh toán:",
+    "paymentCash": "Tiền mặt (Thanh toán khi nhận hàng)",
+    "paymentMomo": "Momo (ví điện tử)",
+    "selectedPayment": "Phương thức đã chọn",
+    "confirmOrder": "Đặt hàng",
+    "proceedPayment": "Tiến hành thanh toán",
+    "cartSummary": "Tóm tắt giỏ hàng",
+    "totalPrice": "Giá trị đơn hàng",
+    "quantity": "Số lượng",
+    "subtotal": "Tạm tính",
+    "checkoutSteps": ["Đăng nhập", "Địa chỉ", "Thanh toán"],
+    "selectedPaymentPlease": "Vui lòng chọn phương thức thanh toán",
+    "checkouingProduct": " Sản phẩm đang thanh toán",
+    "backToHome": "Trở về trang chủ",
+    "back": " Quay lại",
+    "continue": " Tiếp tục"
   }
 }

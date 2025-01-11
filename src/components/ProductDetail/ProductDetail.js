@@ -236,7 +236,7 @@ function ProductDetail() {
             {Math.round(
               ((product.originalPrice - product.price) /
                 product.originalPrice) *
-                100
+              100
             )}
             %
           </span>
@@ -297,7 +297,7 @@ function ProductDetail() {
                 {Math.round(
                   ((product.originalPrice - product.price) /
                     product.originalPrice) *
-                    100
+                  100
                 )}
                 %
               </span>
@@ -307,9 +307,8 @@ function ProductDetail() {
               {product.sizes.map((size, index) => (
                 <button
                   key={index}
-                  className={`custom-btn ${
-                    selectedSize === size.size ? "active" : ""
-                  }`}
+                  className={`custom-btn ${selectedSize === size.size ? "active" : ""
+                    }`}
                   onClick={() => setSelectedSize(size.size)}
                 >
                   {size.size}
@@ -428,7 +427,7 @@ function ProductDetail() {
             <div className="product-details row">
               <div className="col-6">
                 {selectedProduct.product_images &&
-                selectedProduct.product_images.length > 0 ? (
+                  selectedProduct.product_images.length > 0 ? (
                   <Carousel controls={false}>
                     {selectedProduct.product_images.map((image, index) => (
                       <Carousel.Item key={image.image_id}>
@@ -466,9 +465,8 @@ function ProductDetail() {
                     {selectedProduct.sizes.map(({ size }) => (
                       <button
                         key={size}
-                        className={`size-button ${
-                          selectedSize === size ? "active" : ""
-                        }`}
+                        className={`size-button ${selectedSize === size ? "active" : ""
+                          }`}
                         onClick={() => setSelectedSize(size)}
                       >
                         {size}

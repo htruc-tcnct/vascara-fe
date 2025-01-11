@@ -198,7 +198,35 @@
       "status": "Status",
       "close": "Close"
     }
-  }
+  },
+  
+    "checkout": {
+      "loginMessage": "You are logged in as",
+      "loginPrompt": "Please log in to continue with the checkout process.",
+      "loginButton": "Log in now",
+      "addressHeader": "Address",
+      "addressInfo": "Shipping Information",
+      "addAddressButton": "Add Shipping Address",
+      "paymentHeader": "Payment",
+      "paymentMethod": "Select a payment method:",
+      "paymentCash": "Cash (Pay on delivery)",
+      "paymentMomo": "Momo (E-wallet)",
+      "selectedPayment": "Selected Payment Method",
+      "confirmOrder": "Place Order",
+      "proceedPayment": "Proceed to Payment",
+      "cartSummary": "Order Summary",
+      "totalPrice": "Order Value",
+      "quantity": "Quantity",
+      "subtotal": "Subtotal",
+      "checkoutSteps": ["Log in", "Address", "Payment"],
+      "selectedPaymentPlease": "Please select payment method",
+          "checkouingProduct": " Products being checked out",
+      "backToHome": "Back to Home",
+      "back": "Back",
+      "continue": "Continue"
+    }
+
+  
 
 
 

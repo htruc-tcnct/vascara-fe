@@ -139,7 +139,7 @@ function CheckOutComponent() {
                   className="text-success me-2"
                 />
                 <span>
-                  Bạn đã đăng nhập bằng tài khoản <strong>0393976624</strong>
+                  {t("checkout.loginMessage")} <strong>0393976624</strong>
                 </span>
               </Card.Body>
             ) : (
@@ -151,7 +151,7 @@ function CheckOutComponent() {
                   />
                   <span>
                     <p className="text-warning mb-0">
-                      Vui lòng đăng nhập để tiếp tục thanh toán
+                    {t("checkout.loginPrompt")}
                     </p>
                   </span>
                 </div>
@@ -165,7 +165,7 @@ function CheckOutComponent() {
                     navigate("/register");
                   }}
                 >
-                  Đăng nhập ngay
+                  Đ{t("checkout.loginButton")}
                 </Button>
               </Card.Body>
             )}
@@ -174,9 +174,9 @@ function CheckOutComponent() {
       case 2:
         return (
           <Card className="mb-3">
-            <Card.Header>2. Địa chỉ</Card.Header>
+            <Card.Header>2. {t("checkout.addressHeader")}</Card.Header>
             <Card.Body>
-              <p>Thông tin người nhận hàng</p>
+              <p>{t("checkout.addressInfo")}</p>
               <Form>
                 {addressList.map((address) => (
                   <Form.Check
@@ -195,7 +195,7 @@ function CheckOutComponent() {
                 className="w-100 mb-3"
                 onClick={() => setShowModal(true)}
               >
-                Thêm thông tin người nhận hàng{" "}
+               {t("checkout.addAddressButton")}
                 <FontAwesomeIcon icon={faPlusCircle} />
               </Button>
             </Card.Body>
@@ -209,9 +209,9 @@ function CheckOutComponent() {
       case 3:
         return (
           <Card className="mb-3">
-            <Card.Header>3. Thanh toán</Card.Header>
+            <Card.Header>3.  {t("checkout.paymentHeader")}</Card.Header>
             <Card.Body>
-              <p>Chọn phương thức thanh toán:</p>
+              <p>{t("checkout.paymentMethod")}:</p>
               <Form>
                 {/* Momo */}
                 <Form.Check
@@ -231,7 +231,7 @@ function CheckOutComponent() {
                         className="me-2"
                       />
                       <span style={{ fontSize: "0.9rem" }}>
-                        Momo (ví điện tử)
+                       {t("checkout.paymentMomo")}
                       </span>
                     </div>
                   }
@@ -259,7 +259,7 @@ function CheckOutComponent() {
                         className="me-2"
                       />
                       <span style={{ fontSize: "0.9rem" }}>
-                        Tiền mặt (Thanh toán khi nhận hàng)
+                       {t("checkout.paymentCash")}
                       </span>
                     </div>
                   }
@@ -268,9 +268,7 @@ function CheckOutComponent() {
                   onChange={() => handlePaymentChange("Cash")}
                 />
               </Form>
-              <p className="mt-3">
-                Phương thức đã chọn: <b>{selectedPayment || "Chưa chọn"}</b>
-              </p>
+             
             </Card.Body>
           </Card>
         );
@@ -283,21 +281,19 @@ function CheckOutComponent() {
     <Container className="my-4 px-5">
       {/* Thanh tiến trình */}
       <div className="progress-bar-container mb-4">
-        <div className={`step ${currentStep >= 1 ? "completed" : ""}`}>
-          <div className="circle">1</div>
-          <span>Đăng nhập</span>
-        </div>
-        <div className={`line ${currentStep > 1 ? "active" : ""}`}></div>
-        <div className={`step ${currentStep >= 2 ? "completed" : ""}`}>
-          <div className="circle">2</div>
-          <span>Địa chỉ</span>
-        </div>
-        <div className={`line ${currentStep > 2 ? "active" : ""}`}></div>
-        <div className={`step ${currentStep >= 3 ? "completed" : ""}`}>
-          <div className="circle">3</div>
-          <span>Thanh toán</span>
-        </div>
+  {t("checkout.checkoutSteps", { returnObjects: true }).map((step, index) => (
+    <React.Fragment key={index}>
+      <div className={`step ${currentStep >= index + 1 ? "completed" : ""}`}>
+        <div className="circle">{index + 1}</div>
+        <span>{step}</span>
       </div>
+      {index < 2 && (
+        <div className={`line ${currentStep > index + 1 ? "active" : ""}`}></div>
+      )}
+    </React.Fragment>
+  ))}
+</div>
+
 
       {/* Hiển thị lỗi nếu có */}
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
@@ -312,28 +308,28 @@ function CheckOutComponent() {
             {/* Nút quay lại */}
             {currentStep === 1 ? (
               <Button variant="secondary" onClick={() => navigate("/")}>
-                Trở về trang chủ
+               {t("checkout.backToHome")}
               </Button>
             ) : (
               <Button variant="secondary" onClick={handlePreviousStep}>
-                Quay lại
+                 {t("checkout.back")}
               </Button>
             )}
             {/* Nút tiếp tục hoặc hoàn tất */}
             {currentStep < 3 ? (
               <Button variant="dark" onClick={handleNextStep}>
-                Tiếp tục
+                {t("checkout.continue")}
               </Button>
             ) : selectedPayment === "Cash" ? (
               <Button variant="success" onClick={handleOrdered}>
-                Đặt hàng
+              {t("checkout.confirmOrder")}
               </Button>
             ) : selectedPayment === "Momo" ? (
               <Button variant="primary" onClick={handleCheckout}>
-                Tiến hành thanh toán
+                 {t("checkout.proceedPayment")}
               </Button>
             ) : (
-              <p>Vui lòng chọn phương thức thanh toán</p>
+              <p>{t("checkout.selectedPaymentPlease")}</p>
             )}
           </div>
         </Col>
@@ -343,16 +339,16 @@ function CheckOutComponent() {
           <Card className="mb-3">
             <Card.Body>
               <div className="d-flex justify-content-between">
-                <span>Giá trị đơn hàng</span>
+                <span>{t("checkout.totalPrice")}</span>
                 <strong>{totalPrice.toLocaleString()}đ</strong>
               </div>
               <div className="d-flex justify-content-between">
-                <span>Số lượng</span>
+                <span>{t("checkout.quantity")}</span>
                 <strong>{totalQuantity}</strong>
               </div>
               <hr />
               <div className="d-flex justify-content-between">
-                <span>Tạm tính</span>
+                <span>{t("checkout.subtotal")}</span>
                 <strong>{totalPrice.toLocaleString()}đ</strong>
               </div>
             </Card.Body>
@@ -361,7 +357,7 @@ function CheckOutComponent() {
           {/* Sản phẩm */}
           <Card>
             <Card.Header>
-              Sản phẩm đang thanh toán ({cartItems.length})
+              {t("checkout.checkouingProduct")}({cartItems.length})
             </Card.Header>
             <Card.Body style={{ maxHeight: "300px", overflowY: "auto" }}>
               {cartItems.map((item, index) => (
@@ -380,7 +376,7 @@ function CheckOutComponent() {
                       <p className="text-muted mb-1">
                         Giá: {Math.round(item.price).toLocaleString()}đ
                       </p>
-                      <p className="text-muted">Số lượng: {item.quantity}</p>
+                      <p className="text-muted">{t("checkout.quantity")}: {item.quantity}</p>
                     </Col>
                   </Row>
                 </div>

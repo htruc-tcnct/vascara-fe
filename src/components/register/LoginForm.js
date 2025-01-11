@@ -4,7 +4,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Forgotten_Password from "./Forgotten_Password"; // Import Forgotten_Password component
 import { Modal, Button } from "react-bootstrap"; // Import Modal and Button from react-bootstrap
 import "../style/forgotten_password.css";
-function LoginForm({ email, setEmail, password, setPassword, handleLogin, t }) {
+function LoginForm({ email, setEmail, password, setPassword, handleLogin, t , error}) {
   const [showPassword, setShowPassword] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -55,6 +55,9 @@ function LoginForm({ email, setEmail, password, setPassword, handleLogin, t }) {
       <button onClick={handleLogin} className="form-button">
         {t("login.sign_in")}
       </button>
+      {error && (
+        <div className="error-message text-center text-danger">{error}</div>
+      )}
 
       {/* React Bootstrap Modal */}
       <Modal show={isModalOpen} onHide={closeModal} centered>
