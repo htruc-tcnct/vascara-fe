@@ -14,12 +14,10 @@ import s4 from "../../assets/s4.jpg";
 const SearchBar = () => {
   const { isOffCanvasOpen, closeSearchBar } = useSearchBar();
 
-  // State để lưu toàn bộ sản phẩm và kết quả tìm kiếm
   const [allProducts, setAllProducts] = useState([]); // Lưu toàn bộ sản phẩm
   const [filteredProducts, setFilteredProducts] = useState([]); // Kết quả tìm kiếm
   const [searchKey, setSearchKey] = useState(""); // Từ khóa tìm kiếm
 
-  // Danh sách mặc định
   const trendingItems = [
     { image: s1, title: "Pre-fall 2024: The Icon", link: "/pre-fall-2024" },
     { image: s2, title: "Office Style: Oversize Bags", link: "/office-style" },
@@ -27,12 +25,11 @@ const SearchBar = () => {
     { image: s4, title: "Best Seller", link: "/best-seller" },
   ];
 
-  // Lấy tất cả sản phẩm từ server khi Offcanvas mở
   useEffect(() => {
     if (isOffCanvasOpen) {
       const fetchProducts = async () => {
         try {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/products`);
           const products = Array.isArray(response.data.products)
             ? response.data.products
             : []; // Đảm bảo `products` là mảng
