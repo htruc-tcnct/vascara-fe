@@ -32,7 +32,7 @@ const SearchBar = () => {
     if (isOffCanvasOpen) {
       const fetchProducts = async () => {
         try {
-          const response = await axios.get("http://localhost:8081/products");
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
           const products = Array.isArray(response.data.products)
             ? response.data.products
             : []; // Đảm bảo `products` là mảng
