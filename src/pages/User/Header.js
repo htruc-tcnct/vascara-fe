@@ -54,20 +54,20 @@ function OffCanvasExample({ show, handleClose }) {
             <Accordion.Body>
               <ul style={{ paddingLeft: "20px" }}>
                 <li>
-                  <Nav.Link href="#view_all_bags">
+                  <Nav.Link  href="/bag?filter=all">
                     {t("menu.view_all_bags")}
                   </Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#large_bags">{t("menu.large_bags")}</Nav.Link>
+                  <Nav.Link   href="/bag?filter=L">{t("menu.large_bags")}</Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#medium_bags">
+                  <Nav.Link  href="/bag?filter=M">
                     {t("menu.medium_bags")}
                   </Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#small_bags">{t("menu.small_bags")}</Nav.Link>
+                  <Nav.Link href="/bag?filter=S">{t("menu.small_bags")}</Nav.Link>
                 </li>
               </ul>
             </Accordion.Body>
@@ -79,25 +79,48 @@ function OffCanvasExample({ show, handleClose }) {
             <Accordion.Body>
               <ul style={{ paddingLeft: "20px" }}>
                 <li>
-                  <Nav.Link href="#view_all_shoes">
+                  <Nav.Link  href="/sandal?category_id=3&filter=all">
                     {t("menu.view_all_shoes")}
                   </Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#high_heels">{t("menu.high_heels")}</Nav.Link>
+                  <Nav.Link  href="/sandal?category_id=3&filter=high_heels">{t("menu.high_heels")}</Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#sandal">{t("menu.sandal")}</Nav.Link>
+                  <Nav.Link  href="/sandal?category_id=3&filter=sandal">{t("menu.sandal")}</Nav.Link>
                 </li>
                 <li>
-                  <Nav.Link href="#sneaker">{t("menu.sneaker")}</Nav.Link>
+                  <Nav.Link  href="/sandal?category_id=3&filter=sneaker">{t("menu.sneaker")}</Nav.Link>
                 </li>
               </ul>
             </Accordion.Body>
           </Accordion.Item>
 
+
+ {/* Mục 2 */}
+ <Accordion.Item eventKey="2">
+            <Accordion.Header> {t("menu.wallets")}</Accordion.Header>
+            <Accordion.Body>
+              <ul style={{ paddingLeft: "20px" }}>
+                <li>
+                  <Nav.Link  href="/wallet?category_id=2&filter=all">
+                  {t("menu.all-wall")}
+                  </Nav.Link>
+                </li>
+                <li>
+                  <Nav.Link  href="/wallet?category_id=2&filter=hand">  {t("menu.hand_wallet")}</Nav.Link>
+                </li>
+                <li>
+                  <Nav.Link  href="/wallet?category_id=2&filter=mini">  {t("menu.mini_wallet")}</Nav.Link>
+                </li>
+                <li>
+                  <Nav.Link   href="/wallet?category_id=2&filter=leather"> {t("menu.real_leather_wallet")}</Nav.Link>
+                </li>
+              </ul>
+            </Accordion.Body>
+          </Accordion.Item>
           {/* Mục 3 */}
-          <Accordion.Item eventKey="2">
+          <Accordion.Item eventKey="3">
             <Accordion.Header>{t("menu.accessories")}</Accordion.Header>
             <Accordion.Body>
               <ul style={{ paddingLeft: "20px" }}>
@@ -115,7 +138,7 @@ function OffCanvasExample({ show, handleClose }) {
           </Accordion.Item>
 
           {/* Mục 4 */}
-          <Accordion.Item eventKey="3">
+          <Accordion.Item eventKey="4">
             <Accordion.Header>{t("menu.sale")}</Accordion.Header>
             <Accordion.Body>
               <ul style={{ paddingLeft: "20px" }}>
@@ -379,6 +402,7 @@ function Header({ scrollDirection }) {
                             {t("menu.sneaker")}
                           </Dropdown.Item>
                         </Col>
+
                         <Col>
                           <Dropdown.Item className="text-decoration-none fs-5">
                             {t("menu.wallets")}
