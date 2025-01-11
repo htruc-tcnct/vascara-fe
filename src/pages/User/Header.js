@@ -189,6 +189,15 @@ function Header({ scrollDirection }) {
       setToken(storedToken);
     }
   }, []);
+  const handleCartClick = () => {
+    // Toggle the state between "cart" and null
+    setShowModal((prevState) => (prevState === "cart" ? null : "cart"));
+    console.log("modal: ", showModal);
+  };
+  const handleCloseModal = () => {
+    setShowModal(null); // Close all modals
+  };
+
   const handleLogin = async () => {
     const currentURL = window.location.href;
 
@@ -227,7 +236,10 @@ function Header({ scrollDirection }) {
     setShowPassword(!showPassword);
   };
   const handleMouseEnter = (type) => {
+    
+    
     setShowModal(type); // Hiển thị modal
+    console.log("modal: ",showModal)
   };
   const handleLogout = () => {
     // Xóa token khỏi localStorage khi đăng xuất
@@ -594,6 +606,7 @@ function Header({ scrollDirection }) {
                     )}{" "}
                     <CartModal
                       show={showModal === "cart"}
+                      onHide={handleCloseModal}
                       userId={userId}
                       cartCount={cartCount}
                     />
@@ -609,15 +622,99 @@ function Header({ scrollDirection }) {
               style={{ width: "80px" }}
             />
           </Navbar>
+        
           <div className="d-lg-none d-flex">
-            <LanguageSelector />
+            <LanguageSelector />  
+            <Dropdown className="mt-2 ms-2">
+                    <Dropdown.Toggle variant="" id="dropdown-basic" as="div">
+                      <FontAwesomeIcon className="icon-pointer" icon={faUser} />{" "}
+                    </Dropdown.Toggle>
 
-            <Navbar className="ms-2">
-              <div style={{ position: "relative" }}>
+                    <Dropdown.Menu className="custom-dropdown-menu">
+                      {token ? (
+                        // Hiển thị menu người dùng nếu có token
+                        <div className="user-menu">
+                          <Dropdown.Item href="/account-info">
+                            Thông tin tài khoản
+                          </Dropdown.Item>
+                          <Dropdown.Item href="/order-history">
+                            Lịch sử mua hàng
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={handleLogout}>
+                            Đăng xuất
+                          </Dropdown.Item>
+                        </div>
+                      ) : (
+                        // Hiển thị form đăng nhập nếu chưa có token
+                        <div className="login-form">
+                          <h3 className="login-title">Đăng nhập</h3>
+
+                          <label htmlFor="email">
+                            Số điện thoại hoặc email
+                          </label>
+                          <input
+                            type="text"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Vd: 0123456789"
+                          />
+
+                          <label htmlFor="password">Mật khẩu</label>
+                          <div className="password-field">
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              id="password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              placeholder="********"
+                            />
+                            <FontAwesomeIcon
+                              icon={showPassword ? faEyeSlash : faEye}
+                              className="eye-icon"
+                              onClick={togglePasswordVisibility}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </div>
+
+                          {error && (
+                            <p
+                              className="error-message"
+                              style={{ fontSize: "12px", color: "red" }}
+                            >
+                              {error}
+                            </p>
+                          )}
+
+                          <button
+                            className="login-button"
+                            onClick={handleLogin}
+                          >
+                            Đăng nhập
+                          </button>
+
+                          <hr />
+                          <span className="signup-prompt">
+                            Bạn chưa có tài khoản?{" "}
+                            <a href="/register">Đăng ký</a>
+                          </span>
+                        </div>
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
+            <Navbar className="ms-2" 
+                  > 
+              <div style={{ position: "relative" }} onClick={handleCartClick}> 
                 <FontAwesomeIcon
                   className="icon-pointer"
                   icon={faBagShopping}
                 />
+                   <CartModal
+                      show={showModal === "cart"}
+                      onHide={handleCloseModal}
+                      userId={userId}
+                      cartCount={cartCount}
+                    />
                 {cartCount >= 0 && (
                   <span
                     style={{
@@ -636,8 +733,9 @@ function Header({ scrollDirection }) {
                 )}
               </div>
             </Navbar>
-            <Navbar className="ms-2">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
+          
+            <Navbar className="ms-3">
+              <FontAwesomeIcon icon={faMagnifyingGlass} onClick={openSearchBar} />
             </Navbar>
           </div>
         </Container>

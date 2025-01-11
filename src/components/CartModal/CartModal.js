@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Modal } from "react-bootstrap";
 import "./CartIcon.css";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { useCart } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
 
-const CartModal = ({ show, cartCount }) => {
+const CartModal = ({ show, onHide, cartCount }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
+  const [isMobile, setIsMobile] = useState(false); // Detect if the device is mobile
   const token = localStorage.getItem("token");
   const { removeWithout } = useCart();
   const userId = localStorage.getItem("idUser");
@@ -17,6 +18,18 @@ const CartModal = ({ show, cartCount }) => {
   const gotoCart = () => {
     navigate("/cart");
   };
+
+  // Device detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 768); // Mobile devices typically have a width <= 768px
+    };
+
+    checkScreenSize(); // Initial check
+    window.addEventListener("resize", checkScreenSize); // Update on resize
+
+    return () => window.removeEventListener("resize", checkScreenSize); // Cleanup
+  }, []);
 
   const getProductName = (translations) => {
     return translations[i18n.language] || "Product";
@@ -58,7 +71,8 @@ const CartModal = ({ show, cartCount }) => {
     }
   }, [show, userId, cartCount]);
 
-  return (
+  // Dropdown implementation for laptops
+  const LaptopCartModal = () => (
     <Dropdown show={show} style={{ width: "40%" }}>
       <Dropdown.Menu className="cart-dropdown" align="end">
         <Dropdown.Header>{t("product-detail.your-cart")}</Dropdown.Header>
@@ -118,6 +132,59 @@ const CartModal = ({ show, cartCount }) => {
       </Dropdown.Menu>
     </Dropdown>
   );
+
+  // Modal implementation for smartphones
+  const MobileCartModal = () => (
+    <Modal show={show} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t("product-detail.your-cart")}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {cartItems && cartItems.length > 0 ? (
+          cartItems.map((item, index) => (
+            <div key={index} className="cart-item">
+              <img
+                src={item.mainImageUrl}
+                alt={getProductName(item.translations)}
+                className="item-image"
+              />
+              <div className="item-details">
+                <p className="item-name">{getProductName(item.translations)}</p>
+                <p>
+                  {t("product-detail.Size")}: {item.size} |{" "}
+                  {t("product-detail.Price")}:{" "}
+                  {Math.round(item.price).toLocaleString()}đ
+                </p>
+                <p>
+                  {t("product-detail.Quantity")}: {item.quantity}
+                </p>
+              </div>
+              <button
+                className="item-remove"
+                onClick={() =>
+                  handleDeleteItems(item.cartItemId, item.quantity)
+                }
+              >
+                {t("product-detail.Delete")}
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>{t("product-detail.empty-cart")}</p>
+        )}
+      </Modal.Body>
+      {cartItems && cartItems.length > 0 && (
+        <Modal.Footer>
+          <button className="view-cart-btn" onClick={gotoCart}>
+            {t("product-detail.go-to-cart")}
+          </button>
+        </Modal.Footer>
+      )}
+    </Modal>
+  );
+
+  // Conditional rendering
+  return isMobile ? <MobileCartModal /> : <LaptopCartModal />;
 };
 
 export default CartModal;

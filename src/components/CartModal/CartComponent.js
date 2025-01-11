@@ -11,7 +11,7 @@ function CartComponent() {
   const { addToCart, removeWithout, updateCart } = useCart();
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-
+  const [colSize, setColSize] = useState(3); 
   // Calculate the total amount
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -100,14 +100,14 @@ function CartComponent() {
             cartItems.map((item) => (
               <Card className="mb-3" key={item.cartItemId}>
                 <Row className="g-0">
-                  <Col md={3}>
+                  <Col lg={3} xs={3}>
                     <img
                       src={item.mainImageUrl}
                       alt={item.name}
                       className="img-fluid rounded-start"
                     />
                   </Col>
-                  <Col md={9}>
+                  <Col lg={9} xs={9}>
                     <Card.Body>
                       <Card.Title>
                         {getProductName(item.translations)}
